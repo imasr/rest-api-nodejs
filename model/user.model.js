@@ -5,6 +5,7 @@ import { mongoose } from "./../mongoDb/db";
 var UserSchema=mongoose.Schema({
     username: {
         type: String,
+        required:[true,'Name is Required'],
     },
     email: {
         type:String,
