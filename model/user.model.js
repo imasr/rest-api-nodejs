@@ -5,7 +5,6 @@ import { mongoose } from "./../mongoDb/db";
 var UserSchema=mongoose.Schema({
     username: {
         type: String,
-        required:[true,'Name is Required'],
     },
     email: {
         type:String,
@@ -15,7 +14,7 @@ var UserSchema=mongoose.Schema({
     password:{
         type:String,
         required:[true,'password Required'],
-        minlength:[8, 'password must be atleast 8 charcacter long']
+        minlength:[3, 'password must be atleast 3 charcacter long']
     }
 })
 

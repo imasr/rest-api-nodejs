@@ -1,13 +1,13 @@
 import express from 'express';
-import { register } from "./../controller/user.controller";
-var route = express.Router()
+import { register, login } from "./../controller/user.controller";
+var user = express.Router()
 
-route.use((req, res, next)=>{
-    console.log('Time: ', new Date())
+user.use((req, res, next)=>{
     next()
 })
-route.post('/register', register)
+user.post('/register', register);
+user.post('/login', login);
 
 module.exports={
-    route
+    user
 }
