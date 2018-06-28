@@ -5,51 +5,63 @@ import config from "./../config.json";
 
 //registration controller
 var register=(req,res)=>{
-    UserModel.findOne({
-        email: req.body.email
-    }).then(user=> {
-        if(user){
-            return res.json({
-                message:"User Already Exists"
-            })
-        }else{
-            let test = new UserModel(req.body)                
-            test.save().then(response=>{
+    if(!req.body.username){
+        res.status(400).send({ message: "Username Required"})
+    } else if(!req.body.email){
+        res.status(400).send({ message: "Email Required"})
+    } else if(!req.body.password){
+        res.status(400).send({message: "Password Required"})
+    } else {
+        UserModel.findOne({
+            email: req.body.email
+        }).then(user=> {
+            if(user){
                 res.json({
-                    success:true,
-                    user_id:response.user_id,
-                    username:response.username,
-                    email:response.email,
-                    password:response.password,
+                    message:"User Already Exists"
                 })
-            }).catch(e=>{
-                res.status(400).send(e)
-            })
-        }
-    }).catch(e=>{
-        res.status(400).send(e)
-    })
+            }else{
+                let test = new UserModel(req.body)                
+                test.save().then(response=>{
+                    res.json({
+                        success:true,
+                        user_id:response.user_id,
+                        username:response.username,
+                        email:response.email,
+                        password:response.password,
+                    })
+                }).catch(e=>{
+                    res.status(400).send(e)
+                })
+            }
+        }).catch(e=>{
+            res.status(400).send(e)
+        })
+    }
 }
 
 //login controller
 var login=(req,res)=>{
-    UserModel.findOne({
-        email: req.body.email,
-    }).then(user=> {
-        if(user){
-            if(req.body.password){
+    if(!req.body.email){
+        res.status(400).send({ message: "Email Required"})
+    } else if(!req.body.password){
+        res.status(400).send({message: "Password Required"})
+    } else {
+        UserModel.findOne({
+            email: req.body.email,
+        }).then(user=> {
+            if(user){
                 bcrypt.compare(req.body.password, user.password).then(response=> {
                     if(response){
                         var token=jwt.sign({user_id:user._id}, config.secret_token)
                         res.status(200).json({
                             success: true,
-                            username:user.user_id,
+                            user_id:user.user_id,
                             username:user.username,
                             token:token
                         })
                         
                     } else{
-                        res.json({
+                        res.status(403).send({
                             error: "Wrong password"
                         })
                     }                
@@ -57,19 +69,14 @@ var login=(req,res)=>{
                     res.status(400).send(error)
                 });
             }else{
-                res.json({
-                    error: "Password Required"
+                res.status(400).send({
+                    error: "User Not Found"
                 })
             }
-            
-        }else{
-            res.status(404).send({
-                error: "User Not Found"
-            })
-        }
-    }).catch(e=>{
-        res.status(400).send(e)
-    })
+        }).catch(e=>{
+            res.status(400).send(e)
+        })
+    }
 }
 
 module.exports={
