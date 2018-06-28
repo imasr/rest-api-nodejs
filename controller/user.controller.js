@@ -16,14 +16,14 @@ var register=(req,res)=>{
             email: req.body.email
         }).then(user=> {
             if(user){
-                res.json({
+                res.status(400).send({
                     message:"User Already Exists"
                 })
             }else{
                 let test = new UserModel(req.body)                
                 test.save().then(response=>{
                     res.json({
-                        success:true,
+                        success:'User created successfully',
                         user_id:response.user_id,
                         username:response.username,
                         email:response.email,
@@ -62,7 +62,7 @@ var login=(req,res)=>{
                         
                     } else{
                         res.status(403).send({
-                            error: "Wrong password"
+                            message: "Wrong password"
                         })
                     }                
                 }).catch(error=>{
@@ -70,7 +70,7 @@ var login=(req,res)=>{
                 });
             }else{
                 res.status(400).send({
-                    error: "User Not Found"
+                    message: "User Not Found"
                 })
             }
         }).catch(e=>{
