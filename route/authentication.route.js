@@ -1,13 +1,16 @@
 import express from 'express';
-import { register, login } from "./../controller/user.controller";
+import {
+    register,
+    login
+} from "./../controller/authentication.controller";
 var user = express.Router()
 
-user.use((req, res, next)=>{
+user.use((req, res, next) => {
     next()
 })
 user.post('/register', register);
 user.post('/login', login);
 
-module.exports={
+module.exports = {
     user
 }
