@@ -9,14 +9,18 @@ import {
     mongoose
 } from "./mongoDb/db";
 import {
-    user
+    auth
 } from "./route/authentication.route";
+import {
+    users
+} from "./route/users.route";
 
 var app = express();
 app.use(bodyParser.json())
 app.use(cors())
 
-app.use('/', user)
+app.use('/', auth)
+app.use('/', users)
 
 app.listen(server_port, () => {
     console.log(`Server started at ${server_port}`);
