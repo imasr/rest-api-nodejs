@@ -3,6 +3,7 @@ import {
 } from "../model/authentication.model";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import * as _ from "lodash";
 import config from "./../config.json";
 
 //registration controller
@@ -93,7 +94,72 @@ var login = (req, res) => {
     }
 }
 
+//sicial login controller
+var sociallogin = (req, res) => {
+    UserModel.findOne({
+        email: req.body.email,
+    }).then(user => {
+        if (user) {
+            var body = _.pick(req.body, ["username", "email", "gender", "image_url", "birthday", "fb_id", "google_id"])
+            UserModel.findByIdAndUpdate(user._id, {
+                $set: body
+            }, {
+                new: true
+            }).then(fbUserData => {
+                var token = jwt.sign({
+                    user_id: fbUserData._id
+                }, config.secret_token)
+                let resData = {
+                    success: true,
+                    user_id: fbUserData.user_id,
+                    username: fbUserData.username,
+                    email: fbUserData.email,
+                    token: token
+                }
+                if (fbUserData.fb_id) {
+                    resData.fb_id = fbUserData.fb_id
+                }
+                if (fbUserData.google_id) {
+                    resData.google_id = fbUserData.google_id
+                }
+                res.status(200).json(resData)
+            }).catch(e => {
+                res.status(400).send(e)
+            })
+        } else {
+            let test = new UserModel(req.body)
+            console.log(test);
+
+            test.save().then(fbUserData => {
+                var token = jwt.sign({
+                    user_id: fbUserData._id
+                }, config.secret_token)
+                let resData = {
+                    success: true,
+                    user_id: fbUserData.user_id,
+                    username: fbUserData.username,
+                    email: fbUserData.email,
+                    token: token
+                }
+                if (fbUserData.fb_id) {
+                    resData.fb_id = fbUserData.fb_id
+                }
+                if (fbUserData.google_id) {
+                    resData.google_id = fbUserData.google_id
+                }
+                res.status(200).json(resData)
+            }).catch(e => {
+                res.status(400).send(e)
+            })
+        }
+    }).catch(e => {
+        res.status(400).send(e)
+    })
+}
+
+
 module.exports = {
     register,
-    login
+    login,
+    sociallogin,
 }
