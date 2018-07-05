@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import config from "./../config.json";
-import { userInfo } from "os";
 
 const requireLogin=(req,res,next)=>{
     if(!req.headers.authorization){
@@ -15,7 +14,6 @@ const requireLogin=(req,res,next)=>{
         }
     });
 }
-
 
 module.exports = {
     requireLogin
