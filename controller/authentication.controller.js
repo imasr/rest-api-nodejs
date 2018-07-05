@@ -18,7 +18,7 @@ var register = (req, res) => {
         })
     } else if (!req.body.password) {
         res.status(400).send({
-            message: "Password Required"
+            message: "Password is Required"
         })
     } else {
         UserModel.findOne({
@@ -29,7 +29,7 @@ var register = (req, res) => {
                     message: "User Already Exists"
                 })
             } else {
-                let test = new UserModel(req.body)
+                let test = new UserModel(req.body);
                 test.save().then(response => {
                     res.json({
                         success: 'User created successfully',
@@ -94,7 +94,7 @@ var login = (req, res) => {
     }
 }
 
-//sicial login controller
+//social login controller
 var sociallogin = (req, res) => {
     UserModel.findOne({
         email: req.body.email,
@@ -128,8 +128,6 @@ var sociallogin = (req, res) => {
             })
         } else {
             let test = new UserModel(req.body)
-            console.log(test);
-
             test.save().then(fbUserData => {
                 var token = jwt.sign({
                     user_id: fbUserData._id
@@ -161,5 +159,5 @@ var sociallogin = (req, res) => {
 module.exports = {
     register,
     login,
-    sociallogin,
+    sociallogin
 }

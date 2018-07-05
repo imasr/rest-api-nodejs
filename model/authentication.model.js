@@ -16,6 +16,14 @@ var UserSchema = mongoose.Schema({
     },
     password: {
         type: String,
+        required:[
+            function(){
+                if(!!this.fb_id || !!this.google_id){
+                    return false
+                }
+                return true
+            }, 'Password Required'
+        ],
         minlength: [3, 'password must be atleast 3 charcacter long']
     },
     gender: {
@@ -45,9 +53,9 @@ UserSchema.pre('save', function (next) {
             }
             user.password = res;
         })
-    } else {
-        next();
     }
+     next();
+    
 })
 
 //resgistering schema to model

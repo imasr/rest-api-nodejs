@@ -2,7 +2,7 @@ import express from 'express';
 import {
     register,
     login,
-    sociallogin,
+    sociallogin
 } from "./../controller/authentication.controller";
 
 var auth = express.Router()
