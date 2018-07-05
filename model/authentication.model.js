@@ -46,16 +46,17 @@ var UserSchema = mongoose.Schema({
 //encrypt password before saving to db
 UserSchema.pre('save', function (next) {
     var user = this;
-    if (user.password) {
+    if (!!user.password) {
         bcrypt.hash(user.password, 10, function (err, res) {
             if (err) {
                 return next(err);
             }
             user.password = res;
+            next();
         })
+    }else{
+        next();
     }
-     next();
-    
 })
 
 //resgistering schema to model
