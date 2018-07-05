@@ -1,9 +1,10 @@
-import {
-    UserModel
-} from "../model/authentication.model";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as _ from "lodash";
+
+import {
+    UserModel
+} from "../model/authentication.model";
 import config from "./../config.json";
 
 //registration controller

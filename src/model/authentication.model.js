@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+
 import {
     mongoose
 } from "./../mongoDb/db";
@@ -16,9 +17,9 @@ var UserSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required:[
-            function(){
-                if(!!this.fb_id || !!this.google_id){
+        required: [
+            function () {
+                if (!!this.fb_id || !!this.google_id) {
                     return false
                 }
                 return true
@@ -54,7 +55,7 @@ UserSchema.pre('save', function (next) {
             user.password = res;
             next();
         })
-    }else{
+    } else {
         next();
     }
 })

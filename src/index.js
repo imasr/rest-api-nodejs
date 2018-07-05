@@ -3,7 +3,6 @@ import cors from "cors";
 import bodyParser from 'body-parser';
 import validator from 'express-validator';
 
-
 import {
     server_port
 } from "./config/config";

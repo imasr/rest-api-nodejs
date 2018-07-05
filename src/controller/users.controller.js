@@ -1,9 +1,10 @@
 import {
-    UserModel
-} from "../model/authentication.model";
-import {
     ObjectID
 } from "mongoDb";
+
+import {
+    UserModel
+} from "../model/authentication.model";
 
 var getAllusers = (req, res) => {
     UserModel.find().then(users => {
