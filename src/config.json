@@ -1,0 +1,9 @@
+{
+    "secret_token": "my-secret",
+    "email": "emailfrom.asr@gmail.com",
+    "emailPassword": "java@123",
+    "emailHost": "smtp.gmail.com",
+    "noreplyFakeEmail": "no-reply@ashish.com",
+    "dev_ENV": "http://localhost:4200/#",
+    "prod_ENV": "https://loginui.herokuapp.com/#"
+}

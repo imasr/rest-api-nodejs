@@ -1,10 +1,9 @@
 import nodemailer from 'nodemailer';
-import  config from "../config.json";
+import config from "../config.json";
 
-
-let mailer=(email,encryptedId, res)=>{
-    return new Promise ((Resolve,Reject)=>{
-        let transporter=nodemailer.createTransport({
+let mailer = (user, encryptedId, res) => {
+    return new Promise((Resolve, Reject) => {
+        let transporter = nodemailer.createTransport({
             host: config.emailHost,
             service: "gmail",
             port: 465,
@@ -15,21 +14,20 @@ let mailer=(email,encryptedId, res)=>{
             }
         })
         let mailOptions = {
-            from: config.noreplyFakeEmail, // sender address
-            to: email, // list of receivers
-            subject: 'Reset password link', // Subject line
-            html: `<p>Click on below link to reset password<br><br><a href="${config.host_url}/reset/${encryptedId}">click here</a></p>`// plain text body
+            from: config.noreplyFakeEmail,
+            to: user.email,
+            subject: 'Reset password link',
+            html: `<p>Hi, ${user.username},<br>Click on below link to reset password<br><a href="${config.prod_ENV}/reset/${encryptedId}">click here</a></p>` // plain text body
         };
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 return Reject(error)
             }
             Resolve(info)
-         });
+        });
     })
-        
-        
 }
+
 module.exports = {
     mailer
 }
