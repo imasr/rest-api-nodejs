@@ -41,24 +41,40 @@ var UserSchema = mongoose.Schema({
     },
     google_id: {
         type: String,
+    },
+    resetToken: {
+        type: String,
     }
 })
 
 //encrypt password before saving to db
 UserSchema.pre('save', function (next) {
-    var user = this;
-    if (!!user.password) {
-        bcrypt.hash(user.password, 10, function (err, res) {
+    if (!!this.password) {
+        bcrypt.hash(this.password, 10, function (err, res) {
             if (err) {
                 return next(err);
             }
-            user.password = res;
+            this.password = res;
             next();
         })
     } else {
         next();
     }
 })
+UserSchema.pre("findOneAndUpdate", function(next) {
+    const password = this.getUpdate().$set.password;
+    if (!password) {
+        return next();  
+    }
+    try {
+        const salt = bcrypt.genSaltSync();
+        const hash = bcrypt.hashSync(password, salt);
+        this.getUpdate().$set.password = hash;    
+        next();  
+    } catch (error) {
+        return next(error);  
+    }
+});
 
 //resgistering schema to model
 var UserModel = mongoose.model('UserModel', UserSchema)

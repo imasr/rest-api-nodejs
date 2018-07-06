@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as _ from "lodash";
+import { mailer } from "./../services/mailer.services";
+import {decryptFunc, encryptFunc} from "./../services/crypto.services";
 
 import {
     UserModel
@@ -156,9 +158,52 @@ var sociallogin = (req, res) => {
     })
 }
 
+let forget=(req,res) => {
+    encryptFunc(Date.now()).then(encryptedId=>{
+        UserModel.findOneAndUpdate({
+            email: req.body.email,
+        }, {
+            $set: {"resetToken":encryptedId}
+        },{ new: true}).then(user=>{
+            if(!user){
+                return res.status(400).send({ message:'Email not found'})
+            }
+            mailer(req.body.email, encodeURIComponent(encryptedId), res).then(info=>{
+                res.send({
+                    message:"reset password link sent to your mail"
+                })
+            }).catch(err=>{
+                res.status(400).send(err)
+            })
+        })
+    }).catch(err=>{
+        res.status(400).send(err)
+    })
+}
+
+let reset=(req,res)=>{
+    let encryptedToken= decodeURIComponent(req.body.key)
+    decryptFunc(encryptedToken).then(timestamp=>{
+        UserModel.findOneAndUpdate({resetToken:encryptedToken}, {
+            $set: {
+                "password":req.body.newPassword,
+                "resetToken":null
+            }
+        },{ new: true}).then(updated=>{
+            if(!updated){
+                return res.status(401).send({error:"password link expired"})
+            }
+            res.send({message:"Your password is reset successfully "})
+        }).catch(errUpdate=>{
+            res.status(400).send(errUpdate)
+        })
+    })
+}
 
 module.exports = {
     register,
     login,
-    sociallogin
+    sociallogin,
+    forget,
+    reset
 }
