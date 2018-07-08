@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
 
-import { mongodb_port } from "./../config/config";
+import {
+    mongodb_port
+} from "./../config/config";
 
-mongoose.connect(mongodb_port,{ useNewUrlParser: true })
-var db=mongoose.connection;
-db.on('error',(res)=>{
-    console.error( 'connection error',res)
+mongoose.connect(mongodb_port)
+var db = mongoose.connection;
+db.on('error', (res) => {
+    console.error('connection error', res)
 })
-db.once('open', ()=>{
+db.once('open', () => {
     console.error('mongo connection successfull')
 })
 
-module.exports= {
+module.exports = {
     mongoose
 };
