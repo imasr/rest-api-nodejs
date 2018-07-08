@@ -1,6 +1,6 @@
 import {
     ObjectID
-} from "mongoDb";
+} from "mongodb";
 
 import {
     UserModel
