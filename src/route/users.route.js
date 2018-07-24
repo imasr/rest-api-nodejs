@@ -14,9 +14,9 @@ users.use((req, res, next) => {
 
     next()
 })
-users.get('/users', requireLogin, getAllusers);
-users.get('/users/:id', requireLogin, getUserById);
-users.post('/users/delete', requireLogin, deleteUser);
+users.get('/', requireLogin, getAllusers);
+users.get('/:id', requireLogin, getUserById);
+users.post('/delete', requireLogin, deleteUser);
 
 module.exports = {
     users

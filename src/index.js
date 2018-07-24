@@ -3,9 +3,7 @@ import cors from "cors";
 import bodyParser from 'body-parser';
 import validator from 'express-validator';
 
-import {
-    server_port
-} from "./config/config";
+import config from "./config.json";
 import {
     auth
 } from "./route/authentication.route";
@@ -29,10 +27,8 @@ app.use((req, res, next) => {
     next()
 })
 app.use('/', auth)
-app.use('/', users)
+app.use('/users', users)
 
-app.listen(server_port, () => {
-    console.log(`Server started at ${server_port}`);
+app.listen(process.env.PORT || config.server_port, () => {
+    console.log(`Server started at ${config.server_port}`);
 })
-
-//login registration api

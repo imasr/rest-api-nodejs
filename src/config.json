@@ -1,4 +1,6 @@
 {
+    "mongodb_port": "mongodb://127.0.0.1:27017/nodeApi",
+    "server_port": "4000",
     "secret_token": "my-secret",
     "email": "emailfrom.asr@gmail.com",
     "emailPassword": "java@123",

@@ -4,6 +4,7 @@ import {
     mongoose
 } from "./../mongoDb/db";
 
+
 //user schema
 var UserSchema = mongoose.Schema({
     username: {
@@ -50,29 +51,32 @@ var UserSchema = mongoose.Schema({
 //encrypt password before saving to db
 UserSchema.pre('save', function (next) {
     if (!!this.password) {
-        bcrypt.hash(this.password, 10, function (err, res) {
-            if (err) {
-                return next(err);
-            }
-            this.password = res;
-            next();
-        })
+        const saltRounds = 10;
+        bcrypt.genSalt(saltRounds, (error, salt) => {
+            bcrypt.hash(this.password, salt, (err, hash) => {
+                if (err) {
+                    return next(err);
+                }
+                this.password = hash;
+                next();
+            });
+        });
     } else {
         next();
     }
 })
-UserSchema.pre("findOneAndUpdate", function(next) {
+UserSchema.pre("findOneAndUpdate", function (next) {
     const password = this.getUpdate().$set.password;
     if (!password) {
-        return next();  
+        return next();
     }
     try {
         const salt = bcrypt.genSaltSync();
         const hash = bcrypt.hashSync(password, salt);
-        this.getUpdate().$set.password = hash;    
-        next();  
+        this.getUpdate().$set.password = hash;
+        next();
     } catch (error) {
-        return next(error);  
+        return next(error);
     }
 });
 

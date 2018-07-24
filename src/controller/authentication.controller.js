@@ -76,17 +76,17 @@ var login = (req, res) => {
                         var token = jwt.sign({
                             user_id: user._id
                         }, config.secret_token, {
-                            expiresIn: 60 * 30
-                        })
+                                expiresIn: 60 * 30
+                            })
                         res.status(200).json({
                             success: true,
-                            user_id: user.user_id,
+                            user_id: user._id,
                             username: user.username,
                             token: token
                         })
 
                     } else {
-                        res.status(403).send({
+                        res.status(400).send({
                             message: "Wrong password"
                         })
                     }
@@ -114,38 +114,38 @@ var sociallogin = (req, res) => {
             UserModel.findByIdAndUpdate(user._id, {
                 $set: body
             }, {
-                new: true
-            }).then(fbUserData => {
-                var token = jwt.sign({
-                    user_id: fbUserData._id
-                }, config.secret_token, {
-                    expiresIn: 60 * 30
+                    new: true
+                }).then(fbUserData => {
+                    var token = jwt.sign({
+                        user_id: fbUserData._id
+                    }, config.secret_token, {
+                            expiresIn: 60 * 30
+                        })
+                    let resData = {
+                        success: true,
+                        user_id: fbUserData.user_id,
+                        username: fbUserData.username,
+                        email: fbUserData.email,
+                        token: token
+                    }
+                    if (fbUserData.fb_id) {
+                        resData.fb_id = fbUserData.fb_id
+                    }
+                    if (fbUserData.google_id) {
+                        resData.google_id = fbUserData.google_id
+                    }
+                    res.status(200).json(resData)
+                }).catch(e => {
+                    res.status(400).send(e)
                 })
-                let resData = {
-                    success: true,
-                    user_id: fbUserData.user_id,
-                    username: fbUserData.username,
-                    email: fbUserData.email,
-                    token: token
-                }
-                if (fbUserData.fb_id) {
-                    resData.fb_id = fbUserData.fb_id
-                }
-                if (fbUserData.google_id) {
-                    resData.google_id = fbUserData.google_id
-                }
-                res.status(200).json(resData)
-            }).catch(e => {
-                res.status(400).send(e)
-            })
         } else {
             let test = new UserModel(req.body)
             test.save().then(fbUserData => {
                 var token = jwt.sign({
                     user_id: fbUserData._id
                 }, config.secret_token, {
-                    expiresIn: 60 * 30
-                })
+                        expiresIn: 60 * 30
+                    })
                 let resData = {
                     success: true,
                     user_id: fbUserData.user_id,
@@ -174,25 +174,25 @@ let forget = (req, res) => {
         UserModel.findOneAndUpdate({
             email: req.body.email,
         }, {
-            $set: {
-                "resetToken": encryptedId
-            }
-        }, {
-            new: true
-        }).then(user => {
-            if (!user) {
-                return res.status(400).send({
-                    message: 'Email not found'
+                $set: {
+                    "resetToken": encryptedId
+                }
+            }, {
+                new: true
+            }).then(user => {
+                if (!user) {
+                    return res.status(400).send({
+                        message: 'Email not found'
+                    })
+                }
+                mailer(user, encodeURIComponent(encryptedId), res).then(info => {
+                    res.send({
+                        message: "reset password link sent to your mail"
+                    })
+                }).catch(err => {
+                    res.status(400).send(err)
                 })
-            }
-            mailer(user, encodeURIComponent(encryptedId), res).then(info => {
-                res.send({
-                    message: "reset password link sent to your mail"
-                })
-            }).catch(err => {
-                res.status(400).send(err)
             })
-        })
     }).catch(err => {
         res.status(400).send(err)
     })
@@ -204,24 +204,24 @@ let reset = (req, res) => {
         UserModel.findOneAndUpdate({
             resetToken: encryptedToken
         }, {
-            $set: {
-                "password": req.body.newPassword,
-                "resetToken": null
-            }
-        }, {
-            new: true
-        }).then(updated => {
-            if (!updated) {
-                return res.status(401).send({
-                    error: "password link expired"
+                $set: {
+                    "password": req.body.newPassword,
+                    "resetToken": null
+                }
+            }, {
+                new: true
+            }).then(updated => {
+                if (!updated) {
+                    return res.status(401).send({
+                        error: "password link expired"
+                    })
+                }
+                res.send({
+                    message: "Your password is reset successfully "
                 })
-            }
-            res.send({
-                message: "Your password is reset successfully "
+            }).catch(errUpdate => {
+                res.status(400).send(errUpdate)
             })
-        }).catch(errUpdate => {
-            res.status(400).send(errUpdate)
-        })
     })
 }
 
