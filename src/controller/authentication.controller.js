@@ -123,7 +123,7 @@ var sociallogin = (req, res) => {
                         })
                     let resData = {
                         success: true,
-                        user_id: fbUserData.user_id,
+                        user_id: fbUserData._id,
                         username: fbUserData.username,
                         email: fbUserData.email,
                         token: token
@@ -148,7 +148,7 @@ var sociallogin = (req, res) => {
                     })
                 let resData = {
                     success: true,
-                    user_id: fbUserData.user_id,
+                    user_id: fbUserData._id,
                     username: fbUserData.username,
                     email: fbUserData.email,
                     token: token
