@@ -60,11 +60,11 @@ var register = (req, res) => {
 var login = (req, res) => {
     if (!req.body.email) {
         res.status(400).send({
-            message: "Email Required"
+            message: "Email is Required"
         })
     } else if (!req.body.password) {
         res.status(400).send({
-            message: "Password Required"
+            message: "Password is Required"
         })
     } else {
         UserModel.findOne({
@@ -87,7 +87,7 @@ var login = (req, res) => {
 
                     } else {
                         res.status(400).send({
-                            message: "Wrong password"
+                            message: "Password is incorrect"
                         })
                     }
                 }).catch(error => {
