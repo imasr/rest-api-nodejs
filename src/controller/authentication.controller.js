@@ -1,3 +1,4 @@
+import './../config/config';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as _ from "lodash";
@@ -12,7 +13,6 @@ import {
 import {
     UserModel
 } from "../model/authentication.model";
-import config from "./../config.json";
 
 //registration controller
 var register = (req, res) => {
@@ -75,7 +75,7 @@ var login = (req, res) => {
                     if (response) {
                         var token = jwt.sign({
                             user_id: user._id
-                        }, config.secret_token, {
+                        }, process.env.secret_token, {
                                 expiresIn: 60 * 30
                             })
                         res.status(200).json({
@@ -118,7 +118,7 @@ var sociallogin = (req, res) => {
                 }).then(fbUserData => {
                     var token = jwt.sign({
                         user_id: fbUserData._id
-                    }, config.secret_token, {
+                    }, process.env.secret_token, {
                             expiresIn: 60 * 30
                         })
                     let resData = {
@@ -143,7 +143,7 @@ var sociallogin = (req, res) => {
             test.save().then(fbUserData => {
                 var token = jwt.sign({
                     user_id: fbUserData._id
-                }, config.secret_token, {
+                }, process.env.secret_token, {
                         expiresIn: 60 * 30
                     })
                 let resData = {

@@ -1,11 +1,23 @@
 {
-    "mongodb_port": "mongodb://imasr:ashishs723@ds125831.mlab.com:25831/asr",
-    "server_port": "3000",
-    "secret_token": "my-secret",
-    "email": "emailfrom.asr@gmail.com",
-    "emailPassword": "java@123",
-    "emailHost": "smtp.gmail.com",
-    "noreplyFakeEmail": "no-reply@ashish.com",
-    "dev_ENV": "http://localhost:4200/#",
-    "prod_ENV": "https://loginui.herokuapp.com/#"
+    "prod": {
+        "MONGODB_URI": "mongodb://imasr:ashishs723@ds125831.mlab.com:25831/asr",
+        "secret_token": "my-secret",
+        "email": "emailfrom.asr@gmail.com",
+        "emailPassword": "java@123",
+        "emailHost": "smtp.gmail.com",
+        "noreplyFakeEmail": "no-reply@ashish.com",
+        "dev_ENV": "http://localhost:4200/#",
+        "prod_ENV": "https://loginui.herokuapp.com/#"
+    },
+    "development": {
+        "PORT": 3000,
+        "MONGODB_URI": "mongodb://127.0.0.1:27017/nodeApi",
+        "secret_token": "my-secret",
+        "email": "emailfrom.asr@gmail.com",
+        "emailPassword": "java@123",
+        "emailHost": "smtp.gmail.com",
+        "noreplyFakeEmail": "no-reply@ashish.com",
+        "dev_ENV": "http://localhost:4200/#",
+        "prod_ENV": "https://loginui.herokuapp.com/#"
+    }
 }
