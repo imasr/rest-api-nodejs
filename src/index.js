@@ -1,4 +1,4 @@
-require('./config/config');
+import './config/config';
 import express from "express";
 import cors from "cors";
 import bodyParser from 'body-parser';
@@ -7,7 +7,7 @@ import validator from 'express-validator';
 import { auth } from "./route/authentication.route";
 import { users } from "./route/users.route";
 
-const port = normalizePort(process.env.PORT || '8081')
+const port = process.env.PORT
 
 var app = express();
 app.use(bodyParser.json())
