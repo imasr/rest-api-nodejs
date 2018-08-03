@@ -18,15 +18,18 @@ import {
 var register = (req, res) => {
     if (!req.body.username) {
         res.status(400).send({
-            message: "Username Required"
+            message: "Username Required",
+            status: 0
         })
     } else if (!req.body.email) {
         res.status(400).send({
-            message: "Email Required"
+            message: "Email Required",
+            status: 0
         })
     } else if (!req.body.password) {
         res.status(400).send({
-            message: "Password is Required"
+            message: "Password is Required",
+            status: 0
         })
     } else {
         UserModel.findOne({
@@ -34,23 +37,27 @@ var register = (req, res) => {
         }).then(user => {
             if (user) {
                 res.status(400).send({
-                    message: "User Already Exists"
+                    message: "User Already Exists",
+                    status: 0
                 })
             } else {
                 let test = new UserModel(req.body);
                 test.save().then(response => {
                     res.json({
-                        success: 'User created successfully',
+                        message: 'User created successfully',
+                        status: 1,
                         user_id: response.user_id,
                         username: response.username,
                         email: response.email,
                         password: response.password,
                     })
                 }).catch(e => {
+                    e.status = 0
                     res.status(400).send(e)
                 })
             }
         }).catch(e => {
+            e.status = 0
             res.status(400).send(e)
         })
     }
@@ -60,11 +67,13 @@ var register = (req, res) => {
 var login = (req, res) => {
     if (!req.body.email) {
         res.status(400).send({
-            message: "Email is Required"
+            message: "Email is Required",
+            status: 0
         })
     } else if (!req.body.password) {
         res.status(400).send({
-            message: "Password is Required"
+            message: "Password is Required",
+            status: 0
         })
     } else {
         UserModel.findOne({
@@ -80,6 +89,7 @@ var login = (req, res) => {
                             })
                         res.status(200).json({
                             success: true,
+                            status: 1,
                             user_id: user._id,
                             username: user.username,
                             token: token
@@ -87,18 +97,22 @@ var login = (req, res) => {
 
                     } else {
                         res.status(400).send({
-                            message: "Password is incorrect"
+                            message: "Password is incorrect",
+                            status: 0
                         })
                     }
                 }).catch(error => {
+                    error.status = 0
                     res.status(400).send(error)
                 });
             } else {
                 res.status(400).send({
-                    message: "User Not Found"
+                    message: "User Not Found",
+                    status: 0
                 })
             }
         }).catch(e => {
+            e.status = 0
             res.status(400).send(e)
         })
     }
@@ -123,6 +137,7 @@ var sociallogin = (req, res) => {
                         })
                     let resData = {
                         success: true,
+                        status: 1,
                         user_id: fbUserData._id,
                         username: fbUserData.username,
                         email: fbUserData.email,
@@ -136,6 +151,7 @@ var sociallogin = (req, res) => {
                     }
                     res.status(200).json(resData)
                 }).catch(e => {
+                    e.status = 0
                     res.status(400).send(e)
                 })
         } else {
@@ -148,6 +164,7 @@ var sociallogin = (req, res) => {
                     })
                 let resData = {
                     success: true,
+                    status: 1,
                     user_id: fbUserData._id,
                     username: fbUserData.username,
                     email: fbUserData.email,
@@ -161,10 +178,12 @@ var sociallogin = (req, res) => {
                 }
                 res.status(200).json(resData)
             }).catch(e => {
+                e.status = 0
                 res.status(400).send(e)
             })
         }
     }).catch(e => {
+        e.status = 0
         res.status(400).send(e)
     })
 }
@@ -182,18 +201,22 @@ let forget = (req, res) => {
             }).then(user => {
                 if (!user) {
                     return res.status(400).send({
-                        message: 'Email not found'
+                        message: 'Email not found',
+                        status: 0
                     })
                 }
                 mailer(user, encodeURIComponent(encryptedId), res).then(info => {
                     res.send({
-                        message: "reset password link sent to your mail"
+                        message: "reset password link sent to your mail",
+                        status: 1
                     })
                 }).catch(err => {
+                    err.status = 0
                     res.status(400).send(err)
                 })
             })
     }).catch(err => {
+        err.status = 0
         res.status(400).send(err)
     })
 }
@@ -213,13 +236,16 @@ let reset = (req, res) => {
             }).then(updated => {
                 if (!updated) {
                     return res.status(401).send({
-                        error: "password link expired"
+                        message: "password link expired",
+                        status: 0
                     })
                 }
                 res.send({
-                    message: "Your password is reset successfully "
+                    message: "Your password is reset successfully ",
+                    status: 1
                 })
             }).catch(errUpdate => {
+                errUpdate.status = 0
                 res.status(400).send(errUpdate)
             })
     })

@@ -6,8 +6,7 @@
         "emailPassword": "java@123",
         "emailHost": "smtp.gmail.com",
         "noreplyFakeEmail": "no-reply@ashish.com",
-        "dev_ENV": "http://localhost:4200/#",
-        "prod_ENV": "https://loginui.herokuapp.com/#"
+        "host": "https://loginui.herokuapp.com/#"
     },
     "development": {
         "PORT": 8081,
@@ -17,7 +16,6 @@
         "emailPassword": "java@123",
         "emailHost": "smtp.gmail.com",
         "noreplyFakeEmail": "no-reply@ashish.com",
-        "dev_ENV": "http://localhost:4200/#",
-        "prod_ENV": "https://loginui.herokuapp.com/#"
+        "host": "http://localhost:4200/#"
     }
 }
