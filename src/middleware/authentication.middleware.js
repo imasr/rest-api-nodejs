@@ -1,11 +1,10 @@
 import jwt from "jsonwebtoken";
-
 import "./../config/config";
 
 const requireLogin = (req, res, next) => {
     if (!req.headers.authorization) {
         return next(res.status(401).send({
-            error: "You are not Authorised User"
+            error: "You are not Authorised"
         }));
     }
     jwt.verify(req.headers.authorization, process.env.secret_token, function (err, decoded) {
