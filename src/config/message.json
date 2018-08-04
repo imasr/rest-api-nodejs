@@ -1,0 +1,19 @@
+{
+    "success": "Ok",
+    "passwordReset": "Password has been successfully updated",
+    "invalidRequest": "Invalid request",
+    "validationError": "Validation error",
+    "userRegistered": "User registeration successful",
+    "userNotFound": "User not found",
+    "invalidCredentials": "The username or password you have entered is invalid Please Try Again",
+    "invalidEmail": "Email address is not valid",
+    "resetPasswordRequest": "A reset password link has been sent on your Email",
+    "invalidToken": "The verification code you have entered is not correct please request a new one",
+    "expiredToken": "Verification Token Expired.",
+    "invalidResetToken": "Reset password link is not valid, Please request again with a valid reset token",
+    "expiredResetToken": "The reset password link has been expired, Please request again",
+    "invalidUserId": "Invalid User Id",
+    "requestNotFound": "Request not found",
+    "duplicateEmail": "User with provided email address already exists",
+    "unauthorisedRequest": "You are not authorised to perform this action"
+}

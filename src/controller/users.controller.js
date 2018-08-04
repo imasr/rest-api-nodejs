@@ -1,59 +1,48 @@
-import {
-    ObjectID
-} from "mongodb";
+import { ObjectID } from "mongodb";
 
-import {
-    UserModel
-} from "../model/authentication.model";
+import { UserModel } from "../model/authentication.model";
+import messageConfig from './../config/message.json';
+import { errorHandler, pickResponse } from "./../helper/error.handler";
 
-var getAllusers = (req, res) => {
+const getAllusers = (req, res) => {
     UserModel.find().then(users => {
         if (!users) {
-            res.status(400).send({
-                message: "Data Not found",
-                status: 0
-            })
+            return res.status(400).send(errorHandler('Data not found'))
         } else {
-            res.status(200).send(users)
+            res.send(pickResponse(users, messageConfig.success))
         }
     }).catch(error => {
         error.status = 0
         res.status(400).send(error)
     })
 }
+
 const getUserById = (req, res) => {
     var id = req.params.id
     if (req.params.id && !ObjectID.isValid(id)) {
-        return res.status(404).send({
-            message: "id not found",
-            status: 0
-        })
+        return res.status(400).send(errorHandler(messageConfig.invalidUserId))
     }
     UserModel.findById(id).then(user => {
-        res.json({
-            user
-        })
+        res.json(pickResponse(user, messageConfig.success))
     }).catch(e => {
-        e.status = 0
         res.status(400).send(e)
     })
 }
 
-var deleteUser = (req, res) => {
-    var id = req.body.id
-    if (!ObjectID.isValid(id)) {
-        return res.status(404).send({
-            message: "id not found",
-            status: 0
-        })
+const deleteUser = (req, res) => {
+    if (req.body.role !== 'Admin') {
+        return res.status(400).send(errorHandler(messageConfig.unauthorisedRequest))
+    } else {
+        if (!ObjectID.isValid(req.body.id)) {
+            return res.status(400).send(errorHandler(messageConfig.invalidUserId))
+        } else {
+            UserModel.findByIdAndRemove(req.body.id).then(deletedUser => {
+                res.send(pickResponse(`${deletedUser.username} deleted Sucessfully`, messageConfig.success))
+            }).catch(err => {
+                res.status(400).send(err)
+            })
+        }
     }
-    UserModel.findByIdAndRemove(id).then(deletedUser => {
-        res.json(deletedUser)
-    }).catch(err => {
-        err.status = 0
-        res.status(400).send(err)
-    })
-
 }
 
 
