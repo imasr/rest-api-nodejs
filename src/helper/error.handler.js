@@ -10,10 +10,12 @@ let errorHandler = (error) => {
 }
 
 let pickResponse = (res, resStatus) => {
+    console.log(res);
+
     let resMsg = {
         message: resStatus,
-        status: 0,
-        data: res
+        status: 1,
+        result: res
     }
     return resMsg
 }

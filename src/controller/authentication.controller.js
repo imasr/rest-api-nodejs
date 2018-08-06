@@ -2,17 +2,12 @@ import './../config/config';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as _ from "lodash";
-import {
-    mailer
-} from "./../services/mailer.services";
-import {
-    decryptFunc,
-    encryptFunc
-} from "./../services/crypto.services";
-
-import {
-    UserModel
-} from "../model/authentication.model";
+import { mailer } from "./../services/mailer.services";
+import { decryptFunc, encryptFunc } from "./../services/crypto.services";
+import { UserModel } from "../model/authentication.model";
+import messageConfig from './../config/message.json'
+import { pickResponse } from "./../helper/error.handler";
+import { generateToken } from './../helper/generate.token';
 
 //registration controller
 var register = (req, res) => {
@@ -36,24 +31,11 @@ var register = (req, res) => {
             email: req.body.email
         }).then(user => {
             if (user) {
-                res.status(400).send({
-                    message: "User Already Exists",
-                    status: 0
-                })
+                throw { "message": messageConfig.duplicateEmail }
             } else {
                 let test = new UserModel(req.body);
-                test.save().then(response => {
-                    res.json({
-                        message: 'User created successfully',
-                        status: 1,
-                        user_id: response.user_id,
-                        username: response.username,
-                        email: response.email,
-                        password: response.password,
-                    })
-                }).catch(e => {
-                    e.status = 0
-                    res.status(400).send(e)
+                return test.save().then(response => {
+                    res.json(pickResponse(response, messageConfig.userRegistered))
                 })
             }
         }).catch(e => {
@@ -82,24 +64,14 @@ var login = (req, res) => {
             if (user) {
                 bcrypt.compare(req.body.password, user.password).then(response => {
                     if (response) {
-                        var token = jwt.sign({
-                            user_id: user._id
-                        }, process.env.secret_token, {
-                                expiresIn: 60 * 30
-                            })
-                        res.status(200).json({
-                            success: true,
-                            status: 1,
-                            user_id: user._id,
-                            username: user.username,
-                            token: token
+                        generateToken(user).then(userWithToken => {
+                            res.json(pickResponse(userWithToken, messageConfig.success))
                         })
-
                     } else {
-                        res.status(400).send({
+                        throw {
                             message: "Password is incorrect",
                             status: 0
-                        })
+                        }
                     }
                 }).catch(error => {
                     error.status = 0
@@ -125,61 +97,19 @@ var sociallogin = (req, res) => {
     }).then(user => {
         if (user) {
             var body = _.pick(req.body, ["username", "email", "gender", "image_url", "birthday", "fb_id", "google_id"])
-            UserModel.findByIdAndUpdate(user._id, {
-                $set: body
-            }, {
-                    new: true
-                }).then(fbUserData => {
-                    var token = jwt.sign({
-                        user_id: fbUserData._id
-                    }, process.env.secret_token, {
-                            expiresIn: 60 * 30
+            return UserModel.findByIdAndUpdate(user._id, { $set: body }, { new: true })
+                .then(socialLoginUser => {
+                    return generateToken(socialLoginUser)
+                        .then(userWithToken => {
+                            res.json(pickResponse(userWithToken, messageConfig.success))
                         })
-                    let resData = {
-                        success: true,
-                        status: 1,
-                        user_id: fbUserData._id,
-                        username: fbUserData.username,
-                        email: fbUserData.email,
-                        token: token
-                    }
-                    if (fbUserData.fb_id) {
-                        resData.fb_id = fbUserData.fb_id
-                    }
-                    if (fbUserData.google_id) {
-                        resData.google_id = fbUserData.google_id
-                    }
-                    res.status(200).json(resData)
-                }).catch(e => {
-                    e.status = 0
-                    res.status(400).send(e)
                 })
         } else {
             let test = new UserModel(req.body)
-            test.save().then(fbUserData => {
-                var token = jwt.sign({
-                    user_id: fbUserData._id
-                }, process.env.secret_token, {
-                        expiresIn: 60 * 30
-                    })
-                let resData = {
-                    success: true,
-                    status: 1,
-                    user_id: fbUserData._id,
-                    username: fbUserData.username,
-                    email: fbUserData.email,
-                    token: token
-                }
-                if (fbUserData.fb_id) {
-                    resData.fb_id = fbUserData.fb_id
-                }
-                if (fbUserData.google_id) {
-                    resData.google_id = fbUserData.google_id
-                }
-                res.status(200).json(resData)
-            }).catch(e => {
-                e.status = 0
-                res.status(400).send(e)
+            return test.save().then(socialLoginUser => {
+                generateToken(socialLoginUser).then(userWithToken => {
+                    res.json(pickResponse(userWithToken, messageConfig.success))
+                })
             })
         }
     }).catch(e => {

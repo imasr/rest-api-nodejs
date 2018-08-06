@@ -9,7 +9,7 @@ import {
 var UserSchema = mongoose.Schema({
     username: {
         type: String,
-        required: [true, 'Name is Required'],
+        required: [true, 'username is Required'],
     },
     email: {
         type: String,
