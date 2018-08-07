@@ -45,6 +45,10 @@ var UserSchema = mongoose.Schema({
     },
     resetToken: {
         type: String,
+    },
+    image:  { 
+        data: Buffer, 
+        contentType: String 
     }
 })
 

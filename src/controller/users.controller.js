@@ -3,6 +3,8 @@ import { ObjectID } from "mongodb";
 import { UserModel } from "../model/authentication.model";
 import messageConfig from './../config/message.json';
 import { errorHandler, pickResponse } from "./../helper/error.handler";
+import { upload } from "./../services/fileupload.service";
+import * as _ from 'lodash';
 
 const getAllusers = (req, res) => {
     UserModel.find().then(users => {
@@ -45,9 +47,23 @@ const deleteUser = (req, res) => {
     }
 }
 
+const updateUserProfile = (req, res) => {
+    upload(req, res)
+        .then(body => {
+            return UserModel.findByIdAndUpdate(req.user_id, { $set: body }, { new: true })
+                .then(updatedUser => {
+                    return res.json(pickResponse(updatedUser, messageConfig.success))
+                })
+        })
+        .catch(error => {
+            return res.status(400).send(err)
+        })
+}
+
 
 module.exports = {
     getAllusers,
     getUserById,
-    deleteUser
+    deleteUser,
+    updateUserProfile
 }
