@@ -46,11 +46,11 @@ var UserSchema = mongoose.Schema({
     resetToken: {
         type: String,
     },
-    image:  { 
-        data: Buffer, 
-        contentType: String 
+    image: {
+        data: Buffer,
+        contentType: String
     }
-})
+}, { versionKey: false })
 
 //encrypt password before saving to db
 UserSchema.pre('save', function (next) {

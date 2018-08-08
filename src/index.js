@@ -13,6 +13,7 @@ var app = express();
 app.use(bodyParser.json())
 app.use(cors())
 app.use(validator())
+app.use(express.static(__dirname + '/public'))
 app.use((req, res, next) => {
     if (req.body.email) {
         req.checkBody("email", "Enter a valid email address.").isEmail();

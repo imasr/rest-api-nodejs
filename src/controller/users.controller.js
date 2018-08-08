@@ -50,13 +50,19 @@ const deleteUser = (req, res) => {
 const updateUserProfile = (req, res) => {
     upload(req, res)
         .then(body => {
-            return UserModel.findByIdAndUpdate(req.user_id, { $set: body }, { new: true })
-                .then(updatedUser => {
-                    return res.json(pickResponse(updatedUser, messageConfig.success))
-                })
+            console.log(body.file)
+            if (body.file) {
+                let newBody = {
+                    image: `${body.file.destination}/${body.file.filename}`
+                }
+                return UserModel.findByIdAndUpdate(req.user_id, { $set: newBody }, { new: true })
+                    .then(updatedUser => {
+                        return res.json(pickResponse(updatedUser, messageConfig.success))
+                    })
+            }
         })
         .catch(error => {
-            return res.status(400).send(err)
+            return res.status(400).send(error)
         })
 }
 
