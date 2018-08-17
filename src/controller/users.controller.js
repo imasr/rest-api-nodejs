@@ -5,6 +5,7 @@ import messageConfig from './../config/message.json';
 import { errorHandler, pickResponse } from "./../helper/error.handler";
 import { upload } from "./../services/fileupload.service";
 import * as _ from 'lodash';
+import { setOnlineStatus } from "./../services/onlineStatus.services";
 
 const getAllusers = (req, res) => {
     UserModel.find().then(users => {
@@ -50,7 +51,6 @@ const deleteUser = (req, res) => {
 const updateUserProfile = (req, res) => {
     upload(req, res)
         .then(body => {
-            console.log(body.file)
             if (body.file) {
                 let newBody = {
                     image: `${body.file.destination}/${body.file.filename}`
@@ -66,10 +66,22 @@ const updateUserProfile = (req, res) => {
         })
 }
 
+const onlineStatus = (req, res) => {
+    return setOnlineStatus(req)
+        .then(response => {
+            res.send(response);
+        })
+        .catch(e => {
+            res.status(400).send(e);
+        });
+};
+
+
 
 module.exports = {
     getAllusers,
     getUserById,
     deleteUser,
-    updateUserProfile
+    updateUserProfile,
+    onlineStatus
 }

@@ -6,6 +6,7 @@ import validator from 'express-validator';
 
 import { auth } from "./route/authentication.route";
 import { users } from "./route/users.route";
+import { lastSeenCheck } from "./utility/cron";
 
 const port = process.env.PORT
 
@@ -13,6 +14,9 @@ var app = express();
 app.use(bodyParser.json())
 app.use(cors())
 app.use(validator())
+
+lastSeenCheck();
+
 app.use(express.static(__dirname + '/public'))
 app.use((req, res, next) => {
     if (req.body.email) {

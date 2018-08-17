@@ -4,7 +4,12 @@ import {
     mongoose
 } from "./../mongoDb/db";
 
-
+const status = Object.freeze({
+    1: 'Online',
+    2: 'Do Not Disturb',
+    3: 'Away',
+    4: 'Offline'
+});
 //user schema
 var UserSchema = mongoose.Schema({
     username: {
@@ -49,7 +54,20 @@ var UserSchema = mongoose.Schema({
     image: {
         data: Buffer,
         contentType: String
-    }
+    },
+    userStatus: {
+        onlineStatus: {
+            type: String,
+            default: "Offline",
+            enum: Object.values(status),
+        },
+        lastOnlineTimestamp: Date,
+        lastSeenOnlineAt: String,
+        showLastSeen: {
+            type: Boolean,
+            default: true
+        }
+    },
 }, { versionKey: false })
 
 //encrypt password before saving to db
@@ -89,5 +107,6 @@ var UserModel = mongoose.model('UserModel', UserSchema)
 
 
 module.exports = {
-    UserModel
+    UserModel,
+    status
 };
