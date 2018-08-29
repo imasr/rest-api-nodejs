@@ -1,6 +1,7 @@
 node_modules
 node_login_api.zip
-images
+src/public
+.compiled
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

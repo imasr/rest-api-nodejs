@@ -7,6 +7,7 @@ import validator from 'express-validator';
 import { auth } from "./route/authentication.route";
 import { users } from "./route/users.route";
 import { lastSeenCheck } from "./utility/cron";
+import path from 'path';
 
 const port = process.env.PORT
 
@@ -17,7 +18,7 @@ app.use(validator())
 
 lastSeenCheck();
 
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(path.join(__dirname, '/public')))
 app.use((req, res, next) => {
     if (req.body.email) {
         req.checkBody("email", "Enter a valid email address.").isEmail();

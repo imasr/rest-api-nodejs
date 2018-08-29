@@ -1,9 +1,7 @@
 import multer from 'multer';
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, '/images')
-    },
+    destination: 'src/public/images',
     filename: (req, file, cb) => {
         file.timestamp = Date.now()
         cb(null, `${Date.now()}-${file.originalname}`)

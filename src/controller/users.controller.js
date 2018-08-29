@@ -51,9 +51,10 @@ const deleteUser = (req, res) => {
 const updateUserProfile = (req, res) => {
     upload(req, res)
         .then(body => {
+            debugger;
             if (body.file) {
                 let newBody = {
-                    image: `${body.file.destination}/${body.file.filename}`
+                    image: `images/${body.file.filename}`
                 }
                 return UserModel.findByIdAndUpdate(req.user_id, { $set: newBody }, { new: true })
                     .then(updatedUser => {
