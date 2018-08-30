@@ -113,7 +113,7 @@ const firebasepushnotification = (req, res) => {
                     "to": token
                 }, { headers: headers }).then(response => {
                 }).then(response => {
-                    if (user.deviceToken.length === index + 1) {
+                    if (index === 0) {
                         res.send({ "success": true })
                     }
                 }).catch(error => {
