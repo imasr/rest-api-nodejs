@@ -1,11 +1,13 @@
 import { ObjectID } from "mongodb";
+import * as _ from 'lodash';
+import axios from "axios";
 
 import { UserModel } from "../model/authentication.model";
 import messageConfig from './../config/message.json';
 import { errorHandler, pickResponse } from "./../helper/error.handler";
 import { upload } from "./../services/fileupload.service";
-import * as _ from 'lodash';
 import { setOnlineStatus } from "./../services/onlineStatus.services";
+import "./../config/config";
 
 const getAllusers = (req, res) => {
     UserModel.find().then(users => {
@@ -77,6 +79,50 @@ const onlineStatus = (req, res) => {
         });
 };
 
+const saveDeviceTokenFirebase = (user, newDeviceToken) => {
+    var savedDeviceToken = user.deviceToken
+    if (savedDeviceToken.length === 0) {
+        savedDeviceToken.push(newDeviceToken)
+        UserModel.findByIdAndUpdate(user._id, { $set: { "deviceToken": savedDeviceToken, } }, { new: true })
+            .then(res => { })
+    } else {
+        if (!savedDeviceToken.includes(newDeviceToken)) {
+            savedDeviceToken.push(newDeviceToken);
+            UserModel.findByIdAndUpdate(user._id, { $set: { "deviceToken": savedDeviceToken } }, { new: true })
+                .then(res => { })
+        }
+    }
+};
+
+const firebasepushnotification = (req, res) => {
+    let id = req.user_id
+    UserModel.findById(id).then(user => {
+        if (user) {
+            var headers = {
+                "Content-Type": "application/json",
+                Authorization: process.env.FCMkey
+            }
+            user.deviceToken.map((token, index) => {
+                axios.post(process.env.FCMUrl, {
+                    "notification": {
+                        "title": process.env.FCMtitle,
+                        "body": process.env.FCMbody,
+                        "icon": process.env.FCMicon,
+                        "click_action": "login"
+                    },
+                    "to": token
+                }, { headers: headers }).then(response => {
+                }).then(response => {
+                    if (user.deviceToken.length === index + 1) {
+                        res.send({ "success": true })
+                    }
+                }).catch(error => {
+                    console.log(error);
+                });
+            })
+        }
+    })
+}
 
 
 module.exports = {
@@ -84,5 +130,7 @@ module.exports = {
     getUserById,
     deleteUser,
     updateUserProfile,
-    onlineStatus
+    onlineStatus,
+    firebasepushnotification,
+    saveDeviceTokenFirebase
 }

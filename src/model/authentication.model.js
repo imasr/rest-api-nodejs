@@ -33,6 +33,9 @@ var UserSchema = mongoose.Schema({
         ],
         minlength: [3, 'password must be atleast 3 charcacter long']
     },
+    deviceToken: {
+        type: Array
+    },
     gender: {
         type: String,
     },

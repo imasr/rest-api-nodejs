@@ -6,7 +6,12 @@
         "emailPassword": "java@123",
         "emailHost": "smtp.gmail.com",
         "noreplyFakeEmail": "no-reply@ashish.com",
-        "host": "https://loginui.herokuapp.com/#"
+        "host": "https://loginui.herokuapp.com/#",
+        "FCMkey": "key=AAAAxzD_Yog:APA91bEENm4orEGjtgZNWp9Au-1jcgb8Cl5coodHJQRSxsWo7k7YOeS-EuUHGkJ_An2QxFuAWLoz2Sr71i9_DL9CBOPFqlqOA4mzESPDYfKDmzsvEmDjW2LGzNRulbfHiYiBSk1PnTf96zsSITfdYmaNmWYf3YvCIg",
+        "FCMUrl": "https://fcm.googleapis.com/fcm/send",
+        "FCMtitle": "Hello Ashish",
+        "FCMbody": "You have new notification",
+        "FCMicon": "assets/logo.png"
     },
     "development": {
         "PORT": 8080,
@@ -16,6 +21,11 @@
         "emailPassword": "java@123",
         "emailHost": "smtp.gmail.com",
         "noreplyFakeEmail": "no-reply@ashish.com",
-        "host": "http://localhost:4200/#"
+        "host": "http://localhost:4200/#",
+        "FCMkey": "key=AAAAxzD_Yog:APA91bEENm4orEGjtgZNWp9Au-1jcgb8Cl5coodHJQRSxsWo7k7YOeS-EuUHGkJ_An2QxFuAWLoz2Sr71i9_DL9CBOPFqlqOA4mzESPDYfKDmzsvEmDjW2LGzNRulbfHiYiBSk1PnTf96zsSITfdYmaNmWYf3YvCIg",
+        "FCMUrl": "https://fcm.googleapis.com/fcm/send",
+        "FCMtitle": "Hello Ashish",
+        "FCMbody": "You have new notification",
+        "FCMicon": "assets/logo.png"
     }
 }

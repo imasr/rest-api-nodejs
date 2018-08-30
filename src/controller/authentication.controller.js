@@ -9,6 +9,8 @@ import messageConfig from './../config/message.json'
 import { pickResponse } from "./../helper/error.handler";
 import { generateToken } from './../helper/generate.token';
 
+import { saveDeviceTokenFirebase } from "./users.controller";
+
 //registration controller
 var register = (req, res) => {
     if (!req.body.username) {
@@ -62,6 +64,9 @@ var login = (req, res) => {
             email: req.body.email,
         }).then(user => {
             if (user) {
+                if (req.body['deviceToken']) {
+                    saveDeviceTokenFirebase(user, req.body['deviceToken'])
+                }
                 bcrypt.compare(req.body.password, user.password).then(response => {
                     if (response) {
                         generateToken(user).then(userWithToken => {
@@ -96,6 +101,9 @@ var sociallogin = (req, res) => {
         email: req.body.email,
     }).then(user => {
         if (user) {
+            if (req.body['deviceToken']) {
+                saveDeviceTokenFirebase(user, req.body['deviceToken'])
+            }
             var body = _.pick(req.body, ["username", "email", "gender", "image_url", "birthday", "fb_id", "google_id"])
             return UserModel.findByIdAndUpdate(user._id, { $set: body }, { new: true })
                 .then(socialLoginUser => {
@@ -107,6 +115,9 @@ var sociallogin = (req, res) => {
         } else {
             let test = new UserModel(req.body)
             return test.save().then(socialLoginUser => {
+                if (req.body['deviceToken']) {
+                    saveDeviceTokenFirebase(socialLoginUser, req.body['deviceToken'])
+                }
                 generateToken(socialLoginUser).then(userWithToken => {
                     res.json(pickResponse(userWithToken, messageConfig.success))
                 })
@@ -180,6 +191,7 @@ let reset = (req, res) => {
             })
     })
 }
+
 
 module.exports = {
     register,
