@@ -6,7 +6,9 @@ import { mailer } from "./../services/mailer.services";
 import { decryptFunc, encryptFunc } from "./../services/crypto.services";
 import { UserModel } from "../model/authentication.model";
 import messageConfig from './../config/message.json'
-import { pickResponse } from "./../helper/error.handler";
+import { responseHandler, errorHandler } from "./../helper/error.handler";
+import { pickLoginResponse, pickUserResponse } from "./../helper/response.handler";
+
 import { generateToken } from './../helper/generate.token';
 
 import { saveDeviceTokenFirebase } from "./users.controller";
@@ -14,30 +16,25 @@ import { saveDeviceTokenFirebase } from "./users.controller";
 //registration controller
 var register = (req, res) => {
     if (!req.body.username) {
-        res.status(400).send({
-            message: "Username Required",
-            status: 0
-        })
+        res.status(400).send(errorHandler(messageConfig.userNameRequired))
     } else if (!req.body.email) {
-        res.status(400).send({
-            message: "Email Required",
-            status: 0
-        })
+        res.status(400).send(errorHandler(messageConfig.emailRequired))
     } else if (!req.body.password) {
-        res.status(400).send({
-            message: "Password is Required",
-            status: 0
-        })
+        res.status(400).send(errorHandler(messageConfig.passwordRequired))
     } else {
         UserModel.findOne({
             email: req.body.email
         }).then(user => {
             if (user) {
-                throw { "message": messageConfig.duplicateEmail }
+                throw errorHandler(messageConfig.duplicateEmail)
             } else {
                 let test = new UserModel(req.body);
                 return test.save().then(response => {
-                    res.json(pickResponse(response, messageConfig.userRegistered))
+                    res.send({
+                        result: pickUserResponse(response),
+                        status: 1,
+                        message: messageConfig.userRegistered
+                    })
                 })
             }
         }).catch(e => {
@@ -50,42 +47,31 @@ var register = (req, res) => {
 //login controller
 var login = (req, res) => {
     if (!req.body.email) {
-        res.status(400).send({
-            message: "Email is Required",
-            status: 0
-        })
+        res.status(400).send(errorHandler(messageConfig.emailRequired))
     } else if (!req.body.password) {
-        res.status(400).send({
-            message: "Password is Required",
-            status: 0
-        })
+        res.status(400).send(errorHandler(messageConfig.passwordRequired))
     } else {
-        UserModel.findOne({
+        return UserModel.findOne({
             email: req.body.email,
         }).then(user => {
-            if (user) {
+            if (!user) {
+                throw errorHandler(messageConfig.userNotFound)
+            } else {
                 if (req.body['deviceToken']) {
                     saveDeviceTokenFirebase(user, req.body['deviceToken'])
                 }
-                bcrypt.compare(req.body.password, user.password).then(response => {
+                return bcrypt.compare(req.body.password, user.password).then(response => {
                     if (response) {
-                        generateToken(user).then(userWithToken => {
-                            res.json(pickResponse(userWithToken, messageConfig.success))
+                        return generateToken(user).then(userWithToken => {
+                            res.send({
+                                result: pickLoginResponse(userWithToken),
+                                status: 1,
+                                message: messageConfig.success
+                            })
                         })
                     } else {
-                        throw {
-                            message: "Password is incorrect",
-                            status: 0
-                        }
+                        throw errorHandler(messageConfig.incorrectPassword)
                     }
-                }).catch(error => {
-                    error.status = 0
-                    res.status(400).send(error)
-                });
-            } else {
-                res.status(400).send({
-                    message: "User Not Found",
-                    status: 0
                 })
             }
         }).catch(e => {
@@ -107,10 +93,13 @@ var sociallogin = (req, res) => {
             var body = _.pick(req.body, ["username", "email", "gender", "image_url", "birthday", "fb_id", "google_id"])
             return UserModel.findByIdAndUpdate(user._id, { $set: body }, { new: true })
                 .then(socialLoginUser => {
-                    return generateToken(socialLoginUser)
-                        .then(userWithToken => {
-                            res.json(pickResponse(userWithToken, messageConfig.success))
+                    return generateToken(socialLoginUser).then(userWithToken => {
+                        res.send({
+                            result: pickLoginResponse(userWithToken),
+                            status: 1,
+                            message: messageConfig.success
                         })
+                    })
                 })
         } else {
             let test = new UserModel(req.body)
@@ -118,8 +107,12 @@ var sociallogin = (req, res) => {
                 if (req.body['deviceToken']) {
                     saveDeviceTokenFirebase(socialLoginUser, req.body['deviceToken'])
                 }
-                generateToken(socialLoginUser).then(userWithToken => {
-                    res.json(pickResponse(userWithToken, messageConfig.success))
+                return generateToken(socialLoginUser).then(userWithToken => {
+                    res.send({
+                        result: pickLoginResponse(userWithToken),
+                        status: 1,
+                        message: messageConfig.success
+                    })
                 })
             })
         }
@@ -131,29 +124,18 @@ var sociallogin = (req, res) => {
 
 let forget = (req, res) => {
     encryptFunc(Date.now()).then(encryptedId => {
-        UserModel.findOneAndUpdate({
+        return UserModel.findOneAndUpdate({
             email: req.body.email,
-        }, {
-                $set: {
-                    "resetToken": encryptedId
-                }
-            }, {
-                new: true
-            }).then(user => {
+        }, { $set: { "resetToken": encryptedId } }, { new: true })
+            .then(user => {
                 if (!user) {
-                    return res.status(400).send({
-                        message: 'Email not found',
-                        status: 0
-                    })
+                    throw errorHandler(messageConfig.emailNotFound)
                 }
-                mailer(user, encodeURIComponent(encryptedId), res).then(info => {
+                return mailer(user, encodeURIComponent(encryptedId), res).then(info => {
                     res.send({
-                        message: "reset password link sent to your mail",
-                        status: 1
+                        status: 1,
+                        message: messageConfig.resetPasswordRequest
                     })
-                }).catch(err => {
-                    err.status = 0
-                    res.status(400).send(err)
                 })
             })
     }).catch(err => {
@@ -165,30 +147,24 @@ let forget = (req, res) => {
 let reset = (req, res) => {
     let encryptedToken = decodeURIComponent(req.body.key)
     decryptFunc(encryptedToken).then(timestamp => {
-        UserModel.findOneAndUpdate({
+        return UserModel.findOneAndUpdate({
             resetToken: encryptedToken
-        }, {
-                $set: {
-                    "password": req.body.newPassword,
-                    "resetToken": null
-                }
-            }, {
-                new: true
-            }).then(updated => {
+        }, { $set: { "password": req.body.newPassword, "resetToken": null } }, { new: true })
+            .then(updated => {
                 if (!updated) {
                     return res.status(401).send({
-                        message: "password link expired",
+                        message: messageConfig.expiredResetToken,
                         status: 0
                     })
                 }
                 res.send({
-                    message: "Your password is reset successfully ",
+                    message: messageConfig.passwordResetSucess,
                     status: 1
                 })
-            }).catch(errUpdate => {
-                errUpdate.status = 0
-                res.status(400).send(errUpdate)
             })
+    }).catch(error => {
+        error.status = 0
+        res.status(400).send(error)
     })
 }
 

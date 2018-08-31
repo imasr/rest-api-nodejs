@@ -55,8 +55,7 @@ var UserSchema = mongoose.Schema({
         type: String,
     },
     image: {
-        data: Buffer,
-        contentType: String
+        type: String,
     },
     userStatus: {
         onlineStatus: {

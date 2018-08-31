@@ -2,19 +2,28 @@ import { ObjectID } from "mongodb";
 import * as _ from 'lodash';
 import axios from "axios";
 
-import { UserModel } from "../model/authentication.model";
+import "./../config/config";
 import messageConfig from './../config/message.json';
-import { errorHandler, pickResponse } from "./../helper/error.handler";
+import { UserModel } from "../model/authentication.model";
 import { upload } from "./../services/fileupload.service";
 import { setOnlineStatus } from "./../services/onlineStatus.services";
-import "./../config/config";
+import { errorHandler, responseHandler } from "./../helper/error.handler";
+import { pickUserResponse } from "../helper/response.handler";
 
 const getAllusers = (req, res) => {
-    UserModel.find().then(users => {
+    UserModel.find({}, {
+        password: 0,
+        deviceToken: 0,
+        resetToken: 0
+    }).then(users => {
         if (!users) {
-            return res.status(400).send(errorHandler('Data not found'))
+            throw errorHandler(messageConfig.userNotFound)
         } else {
-            res.send(pickResponse(users, messageConfig.success))
+            res.send({
+                result: users,
+                status: 1,
+                message: messageConfig.success
+            })
         }
     }).catch(error => {
         error.status = 0
@@ -28,7 +37,15 @@ const getUserById = (req, res) => {
         return res.status(400).send(errorHandler(messageConfig.invalidUserId))
     }
     UserModel.findById(id).then(user => {
-        res.json(pickResponse(user, messageConfig.success))
+        if (!user) {
+            throw errorHandler(messageConfig.userNotFound)
+        } else {
+            res.send({
+                result: pickUserResponse(user),
+                status: 1,
+                message: messageConfig.success
+            })
+        }
     }).catch(e => {
         res.status(400).send(e)
     })
@@ -42,7 +59,7 @@ const deleteUser = (req, res) => {
             return res.status(400).send(errorHandler(messageConfig.invalidUserId))
         } else {
             UserModel.findByIdAndRemove(req.body.id).then(deletedUser => {
-                res.send(pickResponse(`${deletedUser.username} deleted Sucessfully`, messageConfig.success))
+                res.send(responseHandler(`${deletedUser.username} deleted Sucessfully`, messageConfig.success))
             }).catch(err => {
                 res.status(400).send(err)
             })
@@ -50,17 +67,20 @@ const deleteUser = (req, res) => {
     }
 }
 
-const updateUserProfile = (req, res) => {
+const userProfileImage = (req, res) => {
     upload(req, res)
         .then(body => {
-            debugger;
             if (body.file) {
                 let newBody = {
                     image: `images/${body.file.filename}`
                 }
                 return UserModel.findByIdAndUpdate(req.user_id, { $set: newBody }, { new: true })
                     .then(updatedUser => {
-                        return res.json(pickResponse(updatedUser, messageConfig.success))
+                        return res.send({
+                            result: pickUserResponse(updatedUser),
+                            status: 1,
+                            message: messageConfig.success
+                        })
                     })
             }
         })
@@ -83,13 +103,19 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
     var savedDeviceToken = user.deviceToken
     if (savedDeviceToken.length === 0) {
         savedDeviceToken.push(newDeviceToken)
-        UserModel.findByIdAndUpdate(user._id, { $set: { "deviceToken": savedDeviceToken, } }, { new: true })
-            .then(res => { })
+        UserModel.findByIdAndUpdate(user._id, {
+            $set: {
+                "deviceToken": savedDeviceToken,
+            }
+        }, { new: true }).then(res => { })
     } else {
         if (!savedDeviceToken.includes(newDeviceToken)) {
             savedDeviceToken.push(newDeviceToken);
-            UserModel.findByIdAndUpdate(user._id, { $set: { "deviceToken": savedDeviceToken } }, { new: true })
-                .then(res => { })
+            UserModel.findByIdAndUpdate(user._id, {
+                $set: {
+                    "deviceToken": savedDeviceToken
+                }
+            }, { new: true }).then(res => { })
         }
     }
 };
@@ -97,7 +123,9 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
 const firebasepushnotification = (req, res) => {
     let id = req.user_id
     UserModel.findById(id).then(user => {
-        if (user) {
+        if (!user) {
+            throw errorHandler(messageConfig.userNotFound)
+        } else {
             var headers = {
                 "Content-Type": "application/json",
                 Authorization: process.env.FCMkey
@@ -111,25 +139,20 @@ const firebasepushnotification = (req, res) => {
                         "click_action": "login"
                     },
                     "to": token
-                }, { headers: headers }).then(response => {
-                }).then(response => {
-                    if (index === 0) {
-                        res.send({ "success": true })
-                    }
-                }).catch(error => {
-                    console.log(error);
-                });
+                }, { headers: headers }).then(response => { })
             })
+            res.send({ "success": true })
         }
-    })
+    }).catch(error => {
+        res.status(400).send(error)
+    });
 }
-
 
 module.exports = {
     getAllusers,
     getUserById,
     deleteUser,
-    updateUserProfile,
+    userProfileImage,
     onlineStatus,
     firebasepushnotification,
     saveDeviceTokenFirebase

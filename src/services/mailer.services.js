@@ -17,7 +17,9 @@ let mailer = (user, encryptedId, res) => {
             from: process.env.noreplyFakeEmail,
             to: user.email,
             subject: 'Reset password link',
-            html: `<p>Hi, ${user.username},<br>Click on below link to reset password<br><a href="${process.env.host}/reset/${encryptedId}">click here</a></p>` // plain text body
+            html: `<p>Hi ${user.username}!,
+            <br>Click on below link to reset password
+            <br><a href="${process.env.host}/reset/${encryptedId}">Click Here</a></p>` // plain text body
         };
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {

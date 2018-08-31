@@ -1,6 +1,8 @@
 import { UserModel, status } from "../model/authentication.model";
 import messageConfig from './../config/message.json';
-import { errorHandler, pickResponse } from "./../helper/error.handler";
+
+import { errorHandler, responseHandler } from "./../helper/error.handler";
+import { pickUserResponse } from "./../helper/response.handler";
 import * as _ from 'lodash';
 
 let setOnlineStatus = (data) => {
@@ -12,7 +14,7 @@ let setOnlineStatus = (data) => {
     body.onlineStatus = status[data.query.onlineStatus] || ""
 
     return UserModel.findById({ _id: userid }).then((user) => {
-        if (presence == "yes" & (showlastSeen == 'true' || showlastSeen == 'false')) {
+        if (presence == "yes" && (showlastSeen == 'true' || showlastSeen == 'false')) {
             return updateShowLastSeen(userid, showlastSeen).then(res => {
                 return res
             })
@@ -35,7 +37,7 @@ let setOnlineStatus = (data) => {
             }
             else {
                 return {
-                    result: user,
+                    result: pickUserResponse(user),
                     status: 200,
                     message: messageConfig.success
                 };
@@ -62,7 +64,7 @@ let updateUserStatus = (userid, body) => {
             throw messageConfig.userNotFound;
         }
         return {
-            result: user,
+            result: pickUserResponse(user),
             status: 200,
             message: messageConfig.success
         };
@@ -85,7 +87,7 @@ var updateShowLastSeen = (userid, showLastSeen) => {
             throw messageConfig.userNotFound;
         }
         return {
-            result: user,
+            result: pickUserResponse(user),
             status: 200,
             message: messageConfig.success
         };

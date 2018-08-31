@@ -1,4 +1,4 @@
-
+import * as _ from "lodash";
 
 let errorHandler = (error) => {
     let errorMsg = {
@@ -9,7 +9,7 @@ let errorHandler = (error) => {
     return errorMsg
 }
 
-let pickResponse = (res, resStatus) => {
+let responseHandler = (res, resStatus) => {
     let resMsg = {
         message: resStatus,
         status: 1,
@@ -18,8 +18,7 @@ let pickResponse = (res, resStatus) => {
     return resMsg
 }
 
-
 module.exports = {
     errorHandler,
-    pickResponse
+    responseHandler
 }
