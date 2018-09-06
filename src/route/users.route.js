@@ -7,6 +7,8 @@ import {
     deleteUser,
     userProfileImage,
     onlineStatus,
+    sendFriendRequest,
+    acceptFriendRequest,
     firebasepushnotification
 } from "./../controller/users.controller";
 
@@ -18,6 +20,9 @@ users.post('/users/uploadProfileIphoto', requireLogin, userProfileImage);
 users.get('/users/status', requireLogin, onlineStatus);
 users.get('/users/send-notification', requireLogin, firebasepushnotification);
 users.get('/users/:id', requireLogin, getUserById);
+users.post('/users/send-request', requireLogin, sendFriendRequest);
+users.post('/users/accept-request', requireLogin, acceptFriendRequest);
+
 
 
 

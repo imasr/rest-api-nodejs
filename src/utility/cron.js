@@ -1,16 +1,16 @@
 
 import cron from "node-cron";
-import { UserModel } from "./../model/authentication.model";
+import { User } from "./../model/authentication.model";
 import moment from "moment";
 
 let lastSeenCheck = () => {
     cron.schedule("* * * * * *", () => {
-        UserModel.find()
+        User.find()
             .then(res => {
                 res.map((val, i) => {
                     if (val.userStatus.lastOnlineTimestamp) {
                         var lastSeenOnlineAt = lastSeenFunction(val.userStatus.lastOnlineTimestamp)
-                        return UserModel.findOneAndUpdate(
+                        return User.findOneAndUpdate(
                             { _id: val._id },
                             {
                                 $set: {

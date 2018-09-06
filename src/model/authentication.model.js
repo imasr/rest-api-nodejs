@@ -70,6 +70,12 @@ var UserSchema = mongoose.Schema({
             default: true
         }
     },
+    sentFriendRequest: {
+        type: Array
+    },
+    receivedFriendRequest: {
+        type: Array
+    }
 }, { versionKey: false })
 
 //encrypt password before saving to db
@@ -105,10 +111,10 @@ UserSchema.pre("findOneAndUpdate", function (next) {
 });
 
 //resgistering schema to model
-var UserModel = mongoose.model('UserModel', UserSchema)
+var User = mongoose.model('User', UserSchema)
 
 
 module.exports = {
-    UserModel,
+    User,
     status
 };

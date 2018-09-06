@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import * as _ from "lodash";
 import { mailer } from "./../services/mailer.services";
 import { decryptFunc, encryptFunc } from "./../services/crypto.services";
-import { UserModel } from "../model/authentication.model";
+import { User } from "../model/authentication.model";
 import messageConfig from './../config/message.json'
 import { responseHandler, errorHandler } from "./../helper/error.handler";
 import { pickLoginResponse, pickUserResponse } from "./../helper/response.handler";
@@ -22,13 +22,13 @@ var register = (req, res) => {
     } else if (!req.body.password) {
         res.status(400).send(errorHandler(messageConfig.passwordRequired))
     } else {
-        UserModel.findOne({
+        User.findOne({
             email: req.body.email
         }).then(user => {
             if (user) {
                 throw errorHandler(messageConfig.duplicateEmail)
             } else {
-                let test = new UserModel(req.body);
+                let test = new User(req.body);
                 return test.save().then(response => {
                     res.send({
                         result: pickUserResponse(response),
@@ -51,7 +51,7 @@ var login = (req, res) => {
     } else if (!req.body.password) {
         res.status(400).send(errorHandler(messageConfig.passwordRequired))
     } else {
-        return UserModel.findOne({
+        return User.findOne({
             email: req.body.email,
         }).then(user => {
             if (!user) {
@@ -83,7 +83,7 @@ var login = (req, res) => {
 
 //social login controller
 var sociallogin = (req, res) => {
-    UserModel.findOne({
+    User.findOne({
         email: req.body.email,
     }).then(user => {
         if (user) {
@@ -91,7 +91,7 @@ var sociallogin = (req, res) => {
                 saveDeviceTokenFirebase(user, req.body['deviceToken'])
             }
             var body = _.pick(req.body, ["username", "email", "gender", "image_url", "birthday", "fb_id", "google_id"])
-            return UserModel.findByIdAndUpdate(user._id, { $set: body }, { new: true })
+            return User.findByIdAndUpdate(user._id, { $set: body }, { new: true })
                 .then(socialLoginUser => {
                     return generateToken(socialLoginUser).then(userWithToken => {
                         res.send({
@@ -102,7 +102,7 @@ var sociallogin = (req, res) => {
                     })
                 })
         } else {
-            let test = new UserModel(req.body)
+            let test = new User(req.body)
             return test.save().then(socialLoginUser => {
                 if (req.body['deviceToken']) {
                     saveDeviceTokenFirebase(socialLoginUser, req.body['deviceToken'])
@@ -124,7 +124,7 @@ var sociallogin = (req, res) => {
 
 let forget = (req, res) => {
     encryptFunc(Date.now()).then(encryptedId => {
-        return UserModel.findOneAndUpdate({
+        return User.findOneAndUpdate({
             email: req.body.email,
         }, { $set: { "resetToken": encryptedId } }, { new: true })
             .then(user => {
@@ -147,7 +147,7 @@ let forget = (req, res) => {
 let reset = (req, res) => {
     let encryptedToken = decodeURIComponent(req.body.key)
     decryptFunc(encryptedToken).then(timestamp => {
-        return UserModel.findOneAndUpdate({
+        return User.findOneAndUpdate({
             resetToken: encryptedToken
         }, { $set: { "password": req.body.newPassword, "resetToken": null } }, { new: true })
             .then(updated => {

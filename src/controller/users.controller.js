@@ -4,14 +4,14 @@ import axios from "axios";
 
 import "./../config/config";
 import messageConfig from './../config/message.json';
-import { UserModel } from "../model/authentication.model";
+import { User } from "../model/authentication.model";
 import { upload } from "./../services/fileupload.service";
 import { setOnlineStatus } from "./../services/onlineStatus.services";
 import { errorHandler, responseHandler } from "./../helper/error.handler";
 import { pickUserResponse } from "../helper/response.handler";
 
 const getAllusers = (req, res) => {
-    UserModel.find({}, {
+    User.find({}, {
         password: 0,
         deviceToken: 0,
         resetToken: 0
@@ -36,7 +36,7 @@ const getUserById = (req, res) => {
     if (req.params.id && !ObjectID.isValid(id)) {
         return res.status(400).send(errorHandler(messageConfig.invalidUserId))
     }
-    UserModel.findById(id).then(user => {
+    User.findById(id).then(user => {
         if (!user) {
             throw errorHandler(messageConfig.userNotFound)
         } else {
@@ -58,7 +58,7 @@ const deleteUser = (req, res) => {
         if (!ObjectID.isValid(req.body.id)) {
             return res.status(400).send(errorHandler(messageConfig.invalidUserId))
         } else {
-            UserModel.findByIdAndRemove(req.body.id).then(deletedUser => {
+            User.findByIdAndRemove(req.body.id).then(deletedUser => {
                 res.send(responseHandler(`${deletedUser.username} deleted Sucessfully`, messageConfig.success))
             }).catch(err => {
                 res.status(400).send(err)
@@ -74,7 +74,7 @@ const userProfileImage = (req, res) => {
                 let newBody = {
                     image: `images/${body.file.filename}`
                 }
-                return UserModel.findByIdAndUpdate(req.user_id, { $set: newBody }, { new: true })
+                return User.findByIdAndUpdate(req.user_id, { $set: newBody }, { new: true })
                     .then(updatedUser => {
                         return res.send({
                             result: pickUserResponse(updatedUser),
@@ -103,7 +103,7 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
     var savedDeviceToken = user.deviceToken
     if (savedDeviceToken.length === 0) {
         savedDeviceToken.push(newDeviceToken)
-        UserModel.findByIdAndUpdate(user._id, {
+        User.findByIdAndUpdate(user._id, {
             $set: {
                 "deviceToken": savedDeviceToken,
             }
@@ -111,7 +111,7 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
     } else {
         if (!savedDeviceToken.includes(newDeviceToken)) {
             savedDeviceToken.push(newDeviceToken);
-            UserModel.findByIdAndUpdate(user._id, {
+            User.findByIdAndUpdate(user._id, {
                 $set: {
                     "deviceToken": savedDeviceToken
                 }
@@ -122,7 +122,7 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
 
 const firebasepushnotification = (req, res) => {
     let id = req.user_id
-    UserModel.findById(id).then(user => {
+    User.findById(id).then(user => {
         if (!user) {
             throw errorHandler(messageConfig.userNotFound)
         } else {
@@ -148,6 +148,16 @@ const firebasepushnotification = (req, res) => {
     });
 }
 
+const sendFriendRequest = (req, res) => {
+    let id = req.user_id
+    User.findById(id).then(user => { })
+
+}
+
+const acceptFriendRequest = (req, res) => {
+
+}
+
 module.exports = {
     getAllusers,
     getUserById,
@@ -155,5 +165,7 @@ module.exports = {
     userProfileImage,
     onlineStatus,
     firebasepushnotification,
-    saveDeviceTokenFirebase
+    saveDeviceTokenFirebase,
+    sendFriendRequest,
+    acceptFriendRequest
 }
