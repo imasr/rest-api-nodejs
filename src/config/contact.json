@@ -1,0 +1,7 @@
+{
+    "success": "Ok",
+    "userNameRequired": "Username Required",
+    "emailRequired": "Username Required",
+    "contactNotExist": "Requested contact doesn't exist",
+    "invalidUserId": "Invalid User Id"
+}

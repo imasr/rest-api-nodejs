@@ -14,7 +14,7 @@ const status = Object.freeze({
 var UserSchema = mongoose.Schema({
     username: {
         type: String,
-        required: [true, 'username is Required'],
+        required: [true, 'Username is Required'],
     },
     email: {
         type: String,
@@ -31,7 +31,7 @@ var UserSchema = mongoose.Schema({
                 return true
             }, 'Password Required'
         ],
-        minlength: [3, 'password must be atleast 3 charcacter long']
+        minlength: [3, 'Password must be atleast 3 charcacter long']
     },
     deviceToken: {
         type: Array
@@ -69,12 +69,6 @@ var UserSchema = mongoose.Schema({
             type: Boolean,
             default: true
         }
-    },
-    sentFriendRequest: {
-        type: Array
-    },
-    receivedFriendRequest: {
-        type: Array
     }
 }, { versionKey: false })
 

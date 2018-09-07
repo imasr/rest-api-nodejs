@@ -148,15 +148,7 @@ const firebasepushnotification = (req, res) => {
     });
 }
 
-const sendFriendRequest = (req, res) => {
-    let id = req.user_id
-    User.findById(id).then(user => { })
 
-}
-
-const acceptFriendRequest = (req, res) => {
-
-}
 
 module.exports = {
     getAllusers,
@@ -165,7 +157,5 @@ module.exports = {
     userProfileImage,
     onlineStatus,
     firebasepushnotification,
-    saveDeviceTokenFirebase,
-    sendFriendRequest,
-    acceptFriendRequest
+    saveDeviceTokenFirebase
 }
