@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import "./../config/config";
+import '../environment/environment';
 
 let mailer = (user, encryptedId, res) => {
     return new Promise((Resolve, Reject) => {

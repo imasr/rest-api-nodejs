@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import './../config/config';
+import './../environment/environment';
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
 var db = mongoose.connection;

@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+const contactRequestStatus = Object.freeze({
+    0: 'received',
+    1: 'sent',
+    2: 'blocked'
+})
+
 var ContactSchema = mongoose.Schema({
     contactId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -13,20 +19,21 @@ var ContactSchema = mongoose.Schema({
     },
     requestSatus: {
         type: String,
-        required: true
+        required: true,
+        enum: Object.values(contactRequestStatus),
     }
-}, { versionKey: false })
+}, { _id: false, versionKey: false, })
 
 var UserContactSchema = mongoose.Schema({
-    userId: {
+    user_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     contact: [ContactSchema]
-}, { versionKey: false })
+}, { _id: false, versionKey: false })
 
 var UserContact = mongoose.model('UserContact', UserContactSchema);
 
 module.exports = {
-    UserContact
+    UserContact,
 }

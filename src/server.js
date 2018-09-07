@@ -1,4 +1,4 @@
-import './config/config';
+import './environment/environment';
 import express from "express";
 import cors from "cors";
 import bodyParser from 'body-parser';

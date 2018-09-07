@@ -1,6 +1,6 @@
 import cryptojs from "crypto-js";
 // import config from '../config.json';
-import './../config/config';
+import '../environment/environment';
 
 
 // Encrypt

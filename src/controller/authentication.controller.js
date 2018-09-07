@@ -1,4 +1,4 @@
-import './../config/config';
+import '../environment/environment';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as _ from "lodash";

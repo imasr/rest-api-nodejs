@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import "./../config/config";
+import '../environment/environment';
 
 const requireLogin = (req, res, next) => {
     if (!req.headers.authorization) {

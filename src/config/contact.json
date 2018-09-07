@@ -3,5 +3,9 @@
     "userNameRequired": "Username Required",
     "emailRequired": "Username Required",
     "contactNotExist": "Requested contact doesn't exist",
-    "invalidUserId": "Invalid User Id"
+    "invalidUserId": "Invalid User Id",
+    "blockedContact": "Contact is blocked by user",
+    "sameIdRequest": "You cannot send request to yourself",
+    "requestAlreadySent": "Request Already Sent",
+    "operationFailed": "Request operation Failed"
 }

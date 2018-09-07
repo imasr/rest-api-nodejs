@@ -2,7 +2,7 @@ import { ObjectID } from "mongodb";
 import * as _ from 'lodash';
 import axios from "axios";
 
-import "./../config/config";
+import '../environment/environment';
 import messageConfig from './../config/message.json';
 import { User } from "../model/authentication.model";
 import { upload } from "./../services/fileupload.service";
