@@ -1,19 +1,25 @@
-import { User, status } from "../model/authentication.model";
-import messageConfig from './../config/message.json';
-
-import { errorHandler, responseHandler } from "./../helper/error.handler";
-import { pickUserResponse } from "./../helper/response.handler";
 import * as _ from 'lodash';
+import {
+    User,
+    status
+} from "../model/authentication.model";
+import messageConfig from './../config/message.json';
+import {
+    errorHandler
+} from "./../helper/error.handler";
+import {
+    pickUserResponse
+} from "./../helper/response.handler";
 
 let setOnlineStatus = (data) => {
-
     var userid = data.user_id
     var presence = data.query["presence"]
     var showlastSeen = data.query["showlastSeen"]
     var body = _.pick(data.query, ["onlineStatus"])
     body.onlineStatus = status[data.query.onlineStatus] || ""
-
-    return User.findById({ _id: userid }).then((user) => {
+    return User.findById({
+        _id: userid
+    }).then((user) => {
         if (presence == "yes" && (showlastSeen == 'true' || showlastSeen == 'false')) {
             return updateShowLastSeen(userid, showlastSeen).then(res => {
                 return res
@@ -28,14 +34,12 @@ let setOnlineStatus = (data) => {
                 return updateUserStatus(userid, body).then(res => {
                     return res
                 })
-            }
-            else if (user.userStatus.onlineStatus == "Online" && presence == "no") {
+            } else if (user.userStatus.onlineStatus == "Online" && presence == "no") {
                 body.onlineStatus = "Offline"
                 return updateUserStatus(userid, body).then(res => {
                     return res
                 })
-            }
-            else {
+            } else {
                 return {
                     result: pickUserResponse(user),
                     status: 200,
@@ -50,16 +54,17 @@ let setOnlineStatus = (data) => {
 
 let updateUserStatus = (userid, body) => {
     body.lastOnlineTimestamp = Date.now()
-    return User.findOneAndUpdate(
-        { _id: userid },
-        {
-            $set: {
-                "userStatus.onlineStatus": body.onlineStatus,
-                "userStatus.lastOnlineTimestamp": body.lastOnlineTimestamp
-            }
-        },
-        { new: true, runValidators: true }
-    ).then(user => {
+    return User.findOneAndUpdate({
+        _id: userid
+    }, {
+        $set: {
+            "userStatus.onlineStatus": body.onlineStatus,
+            "userStatus.lastOnlineTimestamp": body.lastOnlineTimestamp
+        }
+    }, {
+        new: true,
+        runValidators: true
+    }).then(user => {
         if (!user) {
             throw messageConfig.userNotFound;
         }
@@ -74,15 +79,16 @@ let updateUserStatus = (userid, body) => {
 }
 
 var updateShowLastSeen = (userid, showLastSeen) => {
-    return User.findOneAndUpdate(
-        { _id: userid },
-        {
-            $set: {
-                "userStatus.showLastSeen": showLastSeen,
-            }
-        },
-        { new: true, runValidators: true }
-    ).then(user => {
+    return User.findOneAndUpdate({
+        _id: userid
+    }, {
+        $set: {
+            "userStatus.showLastSeen": showLastSeen,
+        }
+    }, {
+        new: true,
+        runValidators: true
+    }).then(user => {
         if (!user) {
             throw messageConfig.userNotFound;
         }

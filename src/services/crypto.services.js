@@ -1,7 +1,5 @@
 import cryptojs from "crypto-js";
-// import config from '../config.json';
 import '../environment/environment';
-
 
 // Encrypt
 let encryptFunc = (data) => {

@@ -3,11 +3,17 @@ import express from "express";
 import cors from "cors";
 import bodyParser from 'body-parser';
 import validator from 'express-validator';
-
-import { auth } from "./route/authentication.route";
-import { users } from "./route/users.route";
-import { lastSeenCheck } from "./utility/cron";
 import path from 'path';
+
+import {
+    auth
+} from "./route/authentication.route";
+import {
+    users
+} from "./route/users.route";
+import {
+    lastSeenCheck
+} from "./utility/cron";
 
 const port = process.env.PORT
 

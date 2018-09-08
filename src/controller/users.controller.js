@@ -1,14 +1,27 @@
-import { ObjectID } from "mongodb";
+import {
+    ObjectID
+} from "mongodb";
 import * as _ from 'lodash';
 import axios from "axios";
 
 import '../environment/environment';
 import messageConfig from './../config/message.json';
-import { User } from "../model/authentication.model";
-import { upload } from "./../services/fileupload.service";
-import { setOnlineStatus } from "./../services/onlineStatus.services";
-import { errorHandler, responseHandler } from "./../helper/error.handler";
-import { pickUserResponse } from "../helper/response.handler";
+import {
+    User
+} from "../model/authentication.model";
+import {
+    upload
+} from "./../services/fileupload.service";
+import {
+    setOnlineStatus
+} from "./../services/onlineStatus.services";
+import {
+    errorHandler,
+    responseHandler
+} from "./../helper/error.handler";
+import {
+    pickUserResponse
+} from "../helper/response.handler";
 
 const getAllusers = (req, res) => {
     User.find({}, {
@@ -74,7 +87,11 @@ const userProfileImage = (req, res) => {
                 let newBody = {
                     image: `images/${body.file.filename}`
                 }
-                return User.findByIdAndUpdate(req.user_id, { $set: newBody }, { new: true })
+                return User.findByIdAndUpdate(req.user_id, {
+                        $set: newBody
+                    }, {
+                        new: true
+                    })
                     .then(updatedUser => {
                         return res.send({
                             result: pickUserResponse(updatedUser),
@@ -107,7 +124,9 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
             $set: {
                 "deviceToken": savedDeviceToken,
             }
-        }, { new: true }).then(res => { })
+        }, {
+            new: true
+        }).then(res => {})
     } else {
         if (!savedDeviceToken.includes(newDeviceToken)) {
             savedDeviceToken.push(newDeviceToken);
@@ -115,7 +134,9 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
                 $set: {
                     "deviceToken": savedDeviceToken
                 }
-            }, { new: true }).then(res => { })
+            }, {
+                new: true
+            }).then(res => {})
         }
     }
 };
@@ -139,9 +160,13 @@ const firebasepushnotification = (req, res) => {
                         "click_action": "login"
                     },
                     "to": token
-                }, { headers: headers }).then(response => { })
+                }, {
+                    headers: headers
+                }).then(response => {})
             })
-            res.send({ "success": true })
+            res.send({
+                "success": true
+            })
         }
     }).catch(error => {
         res.status(400).send(error)

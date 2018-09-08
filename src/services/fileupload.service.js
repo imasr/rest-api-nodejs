@@ -8,7 +8,9 @@ const storage = multer.diskStorage({
     }
 })
 
-const uploadFile = multer({ storage }).single('image')
+const uploadFile = multer({
+    storage
+}).single('image')
 
 const upload = (req, res) => {
     return new Promise((resolve, reject) => {

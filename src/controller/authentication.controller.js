@@ -1,17 +1,33 @@
 import '../environment/environment';
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import * as _ from "lodash";
-import { mailer } from "./../services/mailer.services";
-import { decryptFunc, encryptFunc } from "./../services/crypto.services";
-import { User } from "../model/authentication.model";
+import {
+    mailer
+} from "./../services/mailer.services";
+import {
+    decryptFunc,
+    encryptFunc
+} from "./../services/crypto.services";
+import {
+    User
+} from "../model/authentication.model";
 import messageConfig from './../config/message.json'
-import { responseHandler, errorHandler } from "./../helper/error.handler";
-import { pickLoginResponse, pickUserResponse } from "./../helper/response.handler";
+import {
+    responseHandler,
+    errorHandler
+} from "./../helper/error.handler";
+import {
+    pickLoginResponse,
+    pickUserResponse
+} from "./../helper/response.handler";
 
-import { generateToken } from './../helper/generate.token';
+import {
+    generateToken
+} from './../helper/generate.token';
 
-import { saveDeviceTokenFirebase } from "./users.controller";
+import {
+    saveDeviceTokenFirebase
+} from "./users.controller";
 
 //registration controller
 var register = (req, res) => {
@@ -91,7 +107,11 @@ var sociallogin = (req, res) => {
                 saveDeviceTokenFirebase(user, req.body['deviceToken'])
             }
             var body = _.pick(req.body, ["username", "email", "gender", "image_url", "birthday", "fb_id", "google_id"])
-            return User.findByIdAndUpdate(user._id, { $set: body }, { new: true })
+            return User.findByIdAndUpdate(user._id, {
+                    $set: body
+                }, {
+                    new: true
+                })
                 .then(socialLoginUser => {
                     return generateToken(socialLoginUser).then(userWithToken => {
                         res.send({
@@ -125,8 +145,14 @@ var sociallogin = (req, res) => {
 let forget = (req, res) => {
     encryptFunc(Date.now()).then(encryptedId => {
         return User.findOneAndUpdate({
-            email: req.body.email,
-        }, { $set: { "resetToken": encryptedId } }, { new: true })
+                email: req.body.email,
+            }, {
+                $set: {
+                    "resetToken": encryptedId
+                }
+            }, {
+                new: true
+            })
             .then(user => {
                 if (!user) {
                     throw errorHandler(messageConfig.emailNotFound)
@@ -148,8 +174,15 @@ let reset = (req, res) => {
     let encryptedToken = decodeURIComponent(req.body.key)
     decryptFunc(encryptedToken).then(timestamp => {
         return User.findOneAndUpdate({
-            resetToken: encryptedToken
-        }, { $set: { "password": req.body.newPassword, "resetToken": null } }, { new: true })
+                resetToken: encryptedToken
+            }, {
+                $set: {
+                    "password": req.body.newPassword,
+                    "resetToken": null
+                }
+            }, {
+                new: true
+            })
             .then(updated => {
                 if (!updated) {
                     return res.status(401).send({
@@ -167,7 +200,6 @@ let reset = (req, res) => {
         res.status(400).send(error)
     })
 }
-
 
 module.exports = {
     register,

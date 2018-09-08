@@ -70,7 +70,10 @@ var UserSchema = mongoose.Schema({
             default: true
         }
     }
-}, { timestamps: true, versionKey: false })
+}, {
+    timestamps: true,
+    versionKey: false
+})
 
 //encrypt password before saving to db
 UserSchema.pre('save', function (next) {
@@ -106,7 +109,6 @@ UserSchema.pre("findOneAndUpdate", function (next) {
 
 //resgistering schema to model
 var User = mongoose.model('User', UserSchema)
-
 
 module.exports = {
     User,

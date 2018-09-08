@@ -1,6 +1,8 @@
 import express from 'express';
 
-import { requireLogin } from './../middleware/authentication.middleware';
+import {
+    requireLogin
+} from './../middleware/authentication.middleware';
 import {
     getAllusers,
     getUserById,
