@@ -70,7 +70,7 @@ var UserSchema = mongoose.Schema({
             default: true
         }
     }
-}, { versionKey: false })
+}, { timestamps: true, versionKey: false })
 
 //encrypt password before saving to db
 UserSchema.pre('save', function (next) {

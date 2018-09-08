@@ -1,5 +1,8 @@
 import jwt from "jsonwebtoken";
 import '../environment/environment';
+import {
+    User
+} from "./../model/authentication.model";
 
 const requireLogin = (req, res, next) => {
     if (!req.headers.authorization) {
@@ -14,7 +17,10 @@ const requireLogin = (req, res, next) => {
             }));
         } else {
             req.user_id = decoded.user_id
-            next()
+            User.findById(req.user_id).then(user => {
+                req.user = user
+                next()
+            })
         }
     });
 }

@@ -1,27 +1,41 @@
-import { UserContact } from "../model/userContact.model"
-import { User } from "../model/authentication.model"
-import { responseHandler, errorHandler } from "./../helper/error.handler";
+import {
+    UserContact,
+    ContactRequestStatus
+} from "../model/userContact.model"
+import {
+    User
+} from "../model/authentication.model"
+import {
+    responseHandler,
+    errorHandler
+} from "./../helper/error.handler";
 import contactConfig from "../config/contact.json";
+import * as _ from 'lodash'
 
 const sendFriendRequest = (req, res) => {
     let user_id = req.user_id
-    let contactId = req.body.contactId
+    let user = _.pick(req.user, ['email', 'username']);
+    let contact_id = req.body.contact_id
     let contactRequest = req.body
-    User.findById(contactId).then(contactValid => {
+    User.findById(contact_id).then(contactValid => {
         if (!contactValid) {
             throw errorHandler(contactConfig.contactNotExist)
-        } if (user_id == contactId) {
+        }
+        if (user_id == contact_id) {
             throw errorHandler(contactConfig.sameIdRequest)
         } else {
-            return addContact(contactRequest, user_id).then(response => {
+            return addContact(contactRequest, user_id, contact_id, ContactRequestStatus[0]).then(response => {
                 if (!response)
                     throw contactConfig.operationFailed
-                return res.send({
-                    result: response,
-                    status: 1
+                return addContact(user, contact_id, user_id, ContactRequestStatus[1]).then(resp => {
+                    if (!resp)
+                        throw contactConfig.operationFailed
+                    return res.send({
+                        result: responseHandler(contactConfig.requestSent),
+                        status: 1
+                    })
                 })
             })
-
         }
     }).catch(error => {
         if (error.name == 'CastError')
@@ -30,15 +44,17 @@ const sendFriendRequest = (req, res) => {
     });
 }
 
-const addContact = (contactRequest, user_id) => {
+const addContact = (contactRequest, user_id, contact_id, status) => {
+    contactRequest['requestStatus'] = status
+    contactRequest['contact_id'] = contact_id
     return UserContact.findById(user_id).then(userContacts => {
         if (!userContacts) {
             userContacts = new UserContact({
-                user_id: user_id,
+                _id: user_id,
                 contact: [contactRequest]
             })
         } else {
-            if (userContacts.contact.find(value => value.contactId == contactRequest.contactId)) {
+            if (userContacts.contact.find(value => value.contact_id == contactRequest.contact_id)) {
                 throw errorHandler(contactConfig.requestAlreadySent)
             } else {
                 userContacts.contact.push(contactRequest)
@@ -48,7 +64,6 @@ const addContact = (contactRequest, user_id) => {
             return contactRequest;
         })
     })
-
 }
 
 const acceptFriendRequest = (req, res) => {

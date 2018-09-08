@@ -1,39 +1,47 @@
 import mongoose from "mongoose";
 
-const contactRequestStatus = Object.freeze({
-    0: 'received',
-    1: 'sent',
+const ContactRequestStatus = Object.freeze({
+    0: 'sent',
+    1: 'received',
     2: 'blocked'
 })
 
 var ContactSchema = mongoose.Schema({
-    contactId: {
+    contact_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     email: {
         type: String
     },
-    userName: {
+    username: {
         type: String
     },
-    requestSatus: {
+    requestStatus: {
         type: String,
         required: true,
-        enum: Object.values(contactRequestStatus),
+        enum: Object.values(ContactRequestStatus),
     }
-}, { _id: false, versionKey: false, })
+}, {
+    _id: false,
+    timestamps: true,
+    versionKey: false,
+})
 
 var UserContactSchema = mongoose.Schema({
-    user_id: {
+    _id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     contact: [ContactSchema]
-}, { _id: false, versionKey: false })
+}, {
+    timestamps: true,
+    versionKey: false
+})
 
 var UserContact = mongoose.model('UserContact', UserContactSchema);
 
 module.exports = {
     UserContact,
+    ContactRequestStatus
 }

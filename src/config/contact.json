@@ -7,5 +7,6 @@
     "blockedContact": "Contact is blocked by user",
     "sameIdRequest": "You cannot send request to yourself",
     "requestAlreadySent": "Request Already Sent",
+    "requestSent": "Request Sent Sucessfully",
     "operationFailed": "Request operation Failed"
 }
