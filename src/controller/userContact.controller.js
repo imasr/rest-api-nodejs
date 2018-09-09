@@ -4,7 +4,7 @@ import {
 } from "../model/userContact.model"
 import {
     User
-} from "../model/authentication.model"
+} from "../model/user.model"
 import {
     responseHandler,
     errorHandler

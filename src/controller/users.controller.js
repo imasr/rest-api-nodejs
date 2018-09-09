@@ -8,7 +8,7 @@ import '../environment/environment';
 import messageConfig from './../config/message.json';
 import {
     User
-} from "../model/authentication.model";
+} from "../model/user.model";
 import {
     upload
 } from "./../services/fileupload.service";

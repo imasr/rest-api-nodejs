@@ -3,7 +3,7 @@ import moment from "moment";
 
 import {
     User
-} from "./../model/authentication.model";
+} from "./../model/user.model";
 
 let lastSeenCheck = () => {
     cron.schedule("* * * * * *", () => {

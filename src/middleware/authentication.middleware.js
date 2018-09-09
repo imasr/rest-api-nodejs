@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import '../environment/environment';
 import {
     User
-} from "./../model/authentication.model";
+} from "./../model/user.model";
 
 const requireLogin = (req, res, next) => {
     if (!req.headers.authorization) {

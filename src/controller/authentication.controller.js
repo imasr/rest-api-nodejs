@@ -10,7 +10,7 @@ import {
 } from "./../services/crypto.services";
 import {
     User
-} from "../model/authentication.model";
+} from "../model/user.model";
 import messageConfig from './../config/message.json'
 import {
     responseHandler,

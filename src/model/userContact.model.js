@@ -3,7 +3,10 @@ import mongoose from "mongoose";
 const ContactRequestStatus = Object.freeze({
     0: 'sent',
     1: 'received',
-    2: 'blocked'
+    3: 'cancel',
+    4: 'accepted',
+    5: 'rejected',
+    6: 'blocked'
 })
 
 var ContactSchema = mongoose.Schema({

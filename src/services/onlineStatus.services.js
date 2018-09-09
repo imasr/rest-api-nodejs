@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import {
     User,
     status
-} from "../model/authentication.model";
+} from "../model/user.model";
 import messageConfig from './../config/message.json';
 import {
     errorHandler
