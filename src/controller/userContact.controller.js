@@ -66,6 +66,10 @@ const addContact = (contactRequest, user_id, contact_id, status) => {
     })
 }
 
+const cancelFriendRequest = (req, res) => {
+
+}
+
 const acceptFriendRequest = (req, res) => {
 
 }
@@ -77,5 +81,6 @@ const rejectFriendRequest = (req, res) => {
 module.exports = {
     sendFriendRequest,
     acceptFriendRequest,
-    rejectFriendRequest
+    rejectFriendRequest,
+    cancelFriendRequest
 }
