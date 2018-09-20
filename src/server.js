@@ -4,6 +4,7 @@ import cors from "cors";
 import bodyParser from 'body-parser';
 import validator from 'express-validator';
 import path from 'path';
+import socket from 'socket.io'
 
 import {
     auth
@@ -18,26 +19,26 @@ import {
 const port = process.env.PORT
 
 var app = express();
+
 app.use(bodyParser.json())
 app.use(cors())
 app.use(validator())
 
 lastSeenCheck();
-
 app.use(express.static(path.join(__dirname, '/public')))
-app.use((req, res, next) => {
-    if (req.body.email) {
-        req.checkBody("email", "Enter a valid email address.").isEmail();
-        var errors = req.validationErrors();
-        if (errors) {
-            return res.send(errors);
-        }
-    }
-    next()
-})
+
 
 app.use('/', auth, users)
 
-app.listen(port, () => {
+let server = app.listen(port, () => {
     console.log(`Server started at ${port}`);
 })
+
+let io = socket(server)
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('new-message', message => {
+        io.emit('new-message', message);
+    })
+})
+
