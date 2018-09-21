@@ -1,8 +1,4 @@
 node_modules
-node_login_api.zip
 src/public
+src/environment
 .compiled
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml

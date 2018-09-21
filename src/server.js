@@ -34,6 +34,18 @@ let server = app.listen(port, () => {
     console.log(`Server started at ${port}`);
 })
 
+const chatStore = (message, timeStamp) => {
+    let storeData = {
+        chatMessage: message,
+        timeStamp: timeStamp
+    }
+    db.collection('chatroom-chats').save(storeData, (err, result) => {
+        if (err) {
+            return console.log(err);
+        }
+        console.log('saved to database');
+    })
+}
 let io = socket(server)
 io.on('connection', (socket) => {
     console.log('a user connected');
