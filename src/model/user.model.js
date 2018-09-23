@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-
+import './../environment/environment'
 import {
     mongoose
 } from "./../mongoDb/db";
@@ -10,7 +10,12 @@ const status = Object.freeze({
     3: 'Away',
     4: 'Offline'
 });
+const role = Object.freeze({
+    1: 'Admin',
+    2: 'user',
+});
 //user schema
+
 var UserSchema = mongoose.Schema({
     username: {
         type: String,
@@ -32,6 +37,10 @@ var UserSchema = mongoose.Schema({
             }, 'Password Required'
         ],
         minlength: [3, 'Password must be atleast 3 charcacter long']
+    },
+    role: {
+        type: String,
+        enum: Object.values(role),
     },
     deviceToken: {
         type: Array
@@ -71,9 +80,10 @@ var UserSchema = mongoose.Schema({
         }
     }
 }, {
-    timestamps: true,
-    versionKey: false
-})
+        timestamps: true,
+        versionKey: false
+    })
+
 
 //encrypt password before saving to db
 UserSchema.pre('save', function (next) {
@@ -109,6 +119,23 @@ UserSchema.pre("findOneAndUpdate", function (next) {
 
 //resgistering schema to model
 var User = mongoose.model('User', UserSchema)
+
+var defaultUserObj = new User({
+    username: process.env.defaultUser,
+    email: process.env.defaultEmail,
+    password: process.env.defaultPassword,
+    role: "Admin"
+})
+
+User.findOne({ email: process.env.defaultEmail }).then(res => {
+    if (!res) {
+        return defaultUserObj.save().then(res => {
+            console.log("res", res);
+        })
+    }
+}).catch(err => {
+    console.log("err", err)
+})
 
 module.exports = {
     User,
