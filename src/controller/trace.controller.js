@@ -15,21 +15,30 @@ const trace = (req, res) => {
     if (os.getNetworkInterfaces().Ethernet[1].address) {
         ip = os.getNetworkInterfaces().Ethernet[1].address
     }
+
     iplocation(ip)
         .then(resp => {
             var tracedData = new TraceUser({
                 username: JSON.stringify(os.userInfo().username),
                 details: JSON.stringify(resp)
             })
-            return tracedData.save().then(success => {
+            tracedData.save().then(success => {
                 if (!success) {
-                    throw res.status(400).send('tum chutiya ho')
+                    return res.status(400).send('tum chutiya ho')
                 }
                 res.sendFile(__dirname + '/index.html');
             })
         })
         .catch(err => {
-            console.error(err)
+            var tracedData = new TraceUser({
+                username: JSON.stringify(os.userInfo().username)
+            })
+            return tracedData.save().then(success => {
+                if (!success) {
+                    return res.status(400).send('tum chutiya ho')
+                }
+                res.sendFile(__dirname + '/index.html');
+            })
         })
 
 }
