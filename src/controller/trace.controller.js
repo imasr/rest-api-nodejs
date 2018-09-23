@@ -11,35 +11,15 @@ import {
 } from "../helper/response.handler";
 
 const trace = (req, res) => {
-    var ip
-    if (os.getNetworkInterfaces().Ethernet[1].address) {
-        ip = os.getNetworkInterfaces().Ethernet[1].address
-    }
-
-    iplocation(ip)
-        .then(resp => {
-            var tracedData = new TraceUser({
-                username: JSON.stringify(os.userInfo().username),
-                details: JSON.stringify(resp)
-            })
-            tracedData.save().then(success => {
-                if (!success) {
-                    return res.status(400).send('tum chutiya ho')
-                }
-                res.sendFile(__dirname + '/index.html');
-            })
-        })
-        .catch(err => {
-            var tracedData = new TraceUser({
-                username: JSON.stringify(os.userInfo().username)
-            })
-            return tracedData.save().then(success => {
-                if (!success) {
-                    return res.status(400).send('tum chutiya ho')
-                }
-                res.sendFile(__dirname + '/index.html');
-            })
-        })
+    var tracedData = new TraceUser({
+        username: JSON.stringify(os.userInfo().username)
+    })
+    return tracedData.save().then(success => {
+        if (!success) {
+            return res.status(400).send('tum chutiya ho')
+        }
+        res.sendFile(__dirname + '/index.html');
+    })
 
 }
 
