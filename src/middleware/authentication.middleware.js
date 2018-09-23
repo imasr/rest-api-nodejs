@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import '../environment/environment';
+
 import {
     User
 } from "./../model/user.model";

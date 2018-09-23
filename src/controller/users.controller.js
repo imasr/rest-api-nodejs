@@ -4,7 +4,7 @@ import {
 import * as _ from 'lodash';
 import axios from "axios";
 
-import '../environment/environment';
+
 import messageConfig from './../config/message.json';
 import {
     User

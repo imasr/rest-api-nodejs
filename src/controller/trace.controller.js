@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import iplocation from 'iplocation';
 
-import '../environment/environment';
+
 import {
     TraceUser
 } from "../model/trace.model";
