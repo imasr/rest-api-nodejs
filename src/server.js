@@ -13,6 +13,9 @@ import {
     users
 } from "./route/users.route";
 import {
+    traceing
+} from "./route/trace.route";
+import {
     lastSeenCheck
 } from "./utility/cron";
 
@@ -28,7 +31,7 @@ lastSeenCheck();
 app.use(express.static(path.join(__dirname, '/public')))
 
 
-app.use('/', auth, users)
+app.use('/', traceing, auth, users)
 
 let server = app.listen(port, () => {
     console.log(`Server started at ${port}`);
@@ -41,4 +44,3 @@ io.on('connection', (socket) => {
         io.emit('new-message', message);
     })
 })
-
