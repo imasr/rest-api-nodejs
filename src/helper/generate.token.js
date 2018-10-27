@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
 exports.generateToken = (user) => {
     user = JSON.parse(JSON.stringify(user))
@@ -6,8 +6,8 @@ exports.generateToken = (user) => {
         user.token = jwt.sign({
             user_id: user._id
         }, process.env.secret_token, {
-            expiresIn: 60 * 30
-        })
+                expiresIn: 60 * 30
+            })
         Resolve(user)
     })
 }

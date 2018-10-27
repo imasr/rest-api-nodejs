@@ -1,16 +1,9 @@
-import {
-    UserContact,
-    ContactRequestStatus
-} from "../model/userContact.model"
-import {
-    User
-} from "../model/user.model"
-import {
-    responseHandler,
-    errorHandler
-} from "./../helper/error.handler";
-import contactConfig from "../config/contact.json";
-import * as _ from 'lodash'
+
+const _ = require('lodash')
+const { UserContact, ContactRequestStatus } = require("../model/userContact.model")
+const { User } = require("../model/user.model")
+const { responseHandler, errorHandler } = require("./../helper/error.handler");
+const contactConfig = require("../config/contact.json");
 
 const sendFriendRequest = (req, res) => {
     let user_id = req.user_id

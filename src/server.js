@@ -1,23 +1,23 @@
-// import './environment/environment';
-import express from "express";
-import cors from "cors";
-import bodyParser from 'body-parser';
-import validator from 'express-validator';
-import path from 'path';
-import socket from 'socket.io'
+require('./environment/environment');
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const validator = require("express-validator");
+const path = require("path");
+const socket = require("socket.io");
 
-import {
+const {
     auth
-} from "./route/authentication.route";
-import {
+} = require("./route/authentication.route");
+const {
     users
-} from "./route/users.route";
-import {
+} = require("./route/users.route");
+const {
     traceing
-} from "./route/trace.route";
-import {
+} = require("./route/trace.route");
+const {
     lastSeenCheck
-} from "./utility/cron";
+} = require("./utility/cron");
 
 const port = process.env.PORT
 

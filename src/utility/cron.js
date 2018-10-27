@@ -1,9 +1,9 @@
-import cron from "node-cron";
-import moment from "moment";
+const cron = require("node-cron");
 
-import {
+const moment = require("moment");
+const {
     User
-} from "./../model/user.model";
+} = require("./../model/user.model");
 
 let lastSeenCheck = () => {
     cron.schedule("* * * * * *", () => {
@@ -15,13 +15,13 @@ let lastSeenCheck = () => {
                         return User.findOneAndUpdate({
                             _id: val._id
                         }, {
-                            $set: {
-                                "userStatus.lastSeenOnlineAt": lastSeenOnlineAt
-                            }
-                        }, {
-                            new: true,
-                            runValidators: true
-                        }).then(res => {})
+                                $set: {
+                                    "userStatus.lastSeenOnlineAt": lastSeenOnlineAt
+                                }
+                            }, {
+                                new: true,
+                                runValidators: true
+                            }).then(res => { })
                     }
                 })
             }).catch(e => {

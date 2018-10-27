@@ -1,12 +1,11 @@
-import express from 'express';
-
-import {
+const express = require("express");
+const {
     register,
     login,
     sociallogin,
     forget,
     reset
-} from "./../controller/authentication.controller";
+} = require("./../controller/authentication.controller");
 
 var auth = express.Router()
 

@@ -1,4 +1,4 @@
-import cryptojs from "crypto-js";
+const cryptojs = require("crypto-js");
 
 
 // Encrypt

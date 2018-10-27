@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+const _ = require("lodash");
 
 let pickUserResponse = data => {
     let response = _.pick(data, [

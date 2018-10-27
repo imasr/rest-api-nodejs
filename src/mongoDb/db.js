@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import './../environment/environment';
+require('./../environment/environment');
+const mongoose = require("mongoose");
 
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true

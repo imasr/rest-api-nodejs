@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const ContactRequestStatus = Object.freeze({
     0: 'sent',
@@ -26,10 +26,10 @@ var ContactSchema = mongoose.Schema({
         enum: Object.values(ContactRequestStatus),
     }
 }, {
-    _id: false,
-    timestamps: true,
-    versionKey: false,
-})
+        _id: false,
+        timestamps: true,
+        versionKey: false,
+    })
 
 var UserContactSchema = mongoose.Schema({
     _id: {
@@ -38,9 +38,9 @@ var UserContactSchema = mongoose.Schema({
     },
     contact: [ContactSchema]
 }, {
-    timestamps: true,
-    versionKey: false
-})
+        timestamps: true,
+        versionKey: false
+    })
 
 var UserContact = mongoose.model('UserContact', UserContactSchema);
 

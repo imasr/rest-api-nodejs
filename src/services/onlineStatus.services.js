@@ -1,15 +1,15 @@
-import * as _ from 'lodash';
-import {
+const _ = require("lodash");
+const {
     User,
     status
-} from "../model/user.model";
-import messageConfig from './../config/message.json';
-import {
+} = require("../model/user.model");
+const messageConfig = require('./../config/message.json');
+const {
     errorHandler
-} from "./../helper/error.handler";
-import {
+} = require("./../helper/error.handler");
+const {
     pickUserResponse
-} from "./../helper/response.handler";
+} = require("./../helper/response.handler");
 
 let setOnlineStatus = (data) => {
     var userid = data.user_id
@@ -57,49 +57,49 @@ let updateUserStatus = (userid, body) => {
     return User.findOneAndUpdate({
         _id: userid
     }, {
-        $set: {
-            "userStatus.onlineStatus": body.onlineStatus,
-            "userStatus.lastOnlineTimestamp": body.lastOnlineTimestamp
-        }
-    }, {
-        new: true,
-        runValidators: true
-    }).then(user => {
-        if (!user) {
-            throw messageConfig.userNotFound;
-        }
-        return {
-            result: pickUserResponse(user),
-            status: 200,
-            message: messageConfig.success
-        };
-    }).catch(err => {
-        throw errorHandler(err);
-    })
+            $set: {
+                "userStatus.onlineStatus": body.onlineStatus,
+                "userStatus.lastOnlineTimestamp": body.lastOnlineTimestamp
+            }
+        }, {
+            new: true,
+            runValidators: true
+        }).then(user => {
+            if (!user) {
+                throw messageConfig.userNotFound;
+            }
+            return {
+                result: pickUserResponse(user),
+                status: 200,
+                message: messageConfig.success
+            };
+        }).catch(err => {
+            throw errorHandler(err);
+        })
 }
 
 var updateShowLastSeen = (userid, showLastSeen) => {
     return User.findOneAndUpdate({
         _id: userid
     }, {
-        $set: {
-            "userStatus.showLastSeen": showLastSeen,
-        }
-    }, {
-        new: true,
-        runValidators: true
-    }).then(user => {
-        if (!user) {
-            throw messageConfig.userNotFound;
-        }
-        return {
-            result: pickUserResponse(user),
-            status: 200,
-            message: messageConfig.success
-        };
-    }).catch(err => {
-        throw errorHandler(err);
-    })
+            $set: {
+                "userStatus.showLastSeen": showLastSeen,
+            }
+        }, {
+            new: true,
+            runValidators: true
+        }).then(user => {
+            if (!user) {
+                throw messageConfig.userNotFound;
+            }
+            return {
+                result: pickUserResponse(user),
+                status: 200,
+                message: messageConfig.success
+            };
+        }).catch(err => {
+            throw errorHandler(err);
+        })
 }
 
 module.exports = {

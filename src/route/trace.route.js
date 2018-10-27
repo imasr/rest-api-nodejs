@@ -1,9 +1,8 @@
-import express from 'express';
-
-import {
+const express = require("express");
+const {
     trace,
     getuser
-} from "./../controller/trace.controller";
+} = require("./../controller/trace.controller");
 
 var traceing = express.Router()
 

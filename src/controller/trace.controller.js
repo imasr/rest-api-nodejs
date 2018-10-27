@@ -1,14 +1,8 @@
-import * as _ from 'lodash';
-import iplocation from 'iplocation';
 
+const os = require("os");
+const _ = require("lodash");
+const { TraceUser } = require("../model/trace.model");
 
-import {
-    TraceUser
-} from "../model/trace.model";
-import os from "os";
-import {
-    pickUserResponse
-} from "../helper/response.handler";
 
 const trace = (req, res) => {
     var username = os.userInfo().username

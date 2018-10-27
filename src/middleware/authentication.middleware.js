@@ -1,8 +1,5 @@
-import jwt from "jsonwebtoken";
-
-import {
-    User
-} from "./../model/user.model";
+const jwt = require("jsonwebtoken");
+const { User } = require("./../model/user.model");
 
 const requireLogin = (req, res, next) => {
     if (!req.headers.authorization) {

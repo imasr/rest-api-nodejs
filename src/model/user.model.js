@@ -1,8 +1,6 @@
-import bcrypt from "bcrypt";
-import './../environment/environment'
-import {
-    mongoose
-} from "./../mongoDb/db";
+const bcrypt = require("bcrypt");
+require('./../environment/environment')
+const { mongoose } = require("./../mongoDb/db");
 
 const status = Object.freeze({
     1: 'Online',

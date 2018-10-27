@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 var TraceUserSchema = mongoose.Schema({
     details: {
@@ -9,9 +9,9 @@ var TraceUserSchema = mongoose.Schema({
     }
 
 }, {
-    timestamps: true,
-    versionKey: false,
-})
+        timestamps: true,
+        versionKey: false,
+    })
 
 
 

@@ -1,22 +1,22 @@
-import express from 'express';
+const express = require('express');
 
-import {
+const {
     requireLogin
-} from './../middleware/authentication.middleware';
-import {
+} = require('./../middleware/authentication.middleware');
+const {
     getAllusers,
     getUserById,
     deleteUser,
     userProfileImage,
     onlineStatus,
     firebasepushnotification
-} from "./../controller/users.controller";
-import {
+} = require("./../controller/users.controller");
+const {
     sendFriendRequest,
     cancelFriendRequest,
     acceptFriendRequest,
     rejectFriendRequest
-} from "./../controller/userContact.controller";
+} = require("./../controller/userContact.controller");
 
 var users = express.Router()
 

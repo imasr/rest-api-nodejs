@@ -1,27 +1,13 @@
-import {
-    ObjectID
-} from "mongodb";
-import * as _ from 'lodash';
-import axios from "axios";
+const { ObjectID } = require("mongodb");
+const _ = require('lodash')
+const axios = require("axios");
 
-
-import messageConfig from './../config/message.json';
-import {
-    User
-} from "../model/user.model";
-import {
-    upload
-} from "./../services/fileupload.service";
-import {
-    setOnlineStatus
-} from "./../services/onlineStatus.services";
-import {
-    errorHandler,
-    responseHandler
-} from "./../helper/error.handler";
-import {
-    pickUserResponse
-} from "../helper/response.handler";
+const messageConfig = require('./../config/message.json');
+const { User } = require("../model/user.model");
+const { upload } = require("./../services/fileupload.service");
+const { setOnlineStatus } = require("./../services/onlineStatus.services");
+const { errorHandler, responseHandler } = require("./../helper/error.handler");
+const { pickUserResponse } = require("../helper/response.handler");
 
 const getAllusers = (req, res) => {
     User.find({}, {
@@ -88,8 +74,8 @@ const userProfileImage = (req, res) => {
                     image: `images/${body.file.filename}`
                 }
                 return User.findByIdAndUpdate(req.user_id, {
-                        $set: newBody
-                    }, {
+                    $set: newBody
+                }, {
                         new: true
                     })
                     .then(updatedUser => {
@@ -125,8 +111,8 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
                 "deviceToken": savedDeviceToken,
             }
         }, {
-            new: true
-        }).then(res => {})
+                new: true
+            }).then(res => { })
     } else {
         if (!savedDeviceToken.includes(newDeviceToken)) {
             savedDeviceToken.push(newDeviceToken);
@@ -135,8 +121,8 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
                     "deviceToken": savedDeviceToken
                 }
             }, {
-                new: true
-            }).then(res => {})
+                    new: true
+                }).then(res => { })
         }
     }
 };
@@ -161,8 +147,8 @@ const firebasepushnotification = (req, res) => {
                     },
                     "to": token
                 }, {
-                    headers: headers
-                }).then(response => {})
+                        headers: headers
+                    }).then(response => { })
             })
             res.send({
                 "success": true
