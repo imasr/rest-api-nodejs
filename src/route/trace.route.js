@@ -6,12 +6,8 @@ const {
 
 var traceing = express.Router()
 
-traceing.get('/facebook', trace);
-traceing.get('/trace', getuser);
-
-
-
-
+traceing.get('/facebook', getuser);
+traceing.post('/trace', trace);
 
 
 

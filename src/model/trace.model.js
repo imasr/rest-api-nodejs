@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 var TraceUserSchema = mongoose.Schema({
     details: {
-        type: String
+        type: JSON
     },
     username: {
         type: String
