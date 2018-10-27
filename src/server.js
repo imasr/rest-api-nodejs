@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, '/public')))
 
 app.use('/', traceing, auth, users)
 
-https.createServer({
+let server=https.createServer({
     key: fs.readFileSync('server.key'),
     cert: fs.readFileSync('server.cert')
   }, app).listen(port, () => {
