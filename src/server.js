@@ -35,8 +35,8 @@ app.use(express.static(path.join(__dirname, '/public')))
 app.use('/', traceing, auth, users)
 
 https.createServer({
-    key: fs.readFileSync('../server.key'),
-    cert: fs.readFileSync('../server.cert')
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
   }, app).listen(port, () => {
     console.log(`Server started at ${port}`);
 })
