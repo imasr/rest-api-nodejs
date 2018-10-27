@@ -18,7 +18,8 @@ const {
 const {
     lastSeenCheck
 } = require("./utility/cron");
-
+var fs = require('fs')
+var https = require('https')
 const port = process.env.PORT
 
 var app = express();
@@ -33,7 +34,10 @@ app.use(express.static(path.join(__dirname, '/public')))
 
 app.use('/', traceing, auth, users)
 
-let server = app.listen(port, () => {
+https.createServer({
+    key: fs.readFileSync('../server.key'),
+    cert: fs.readFileSync('../server.cert')
+  }, app).listen(port, () => {
     console.log(`Server started at ${port}`);
 })
 
