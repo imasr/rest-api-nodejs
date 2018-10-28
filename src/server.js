@@ -34,12 +34,15 @@ app.use(express.static(path.join(__dirname, '/public')))
 
 app.use('/', traceing, auth, users)
 
-let server=https.createServer({
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert')
-  }, app).listen(port, () => {
+let server=app.listen(port, () => {
     console.log(`Server started at ${port}`);
 })
+// let server=https.createServer({
+//     key: fs.readFileSync('server.key'),
+//     cert: fs.readFileSync('server.cert')
+//   }, app).listen(port, () => {
+//     console.log(`Server started at ${port}`);
+// })
 
 // const chatStore = (message, timeStamp) => {
 //     let storeData = {
