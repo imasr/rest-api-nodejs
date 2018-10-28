@@ -6,7 +6,7 @@ var axios = require('axios');
 
 
 const trace = (req, res) => {
-    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${req.body.lat},${req.body.lng}&key=AIzaSyB5xFQL7-Cy90I-RzAAJRjU-IxUtKSb-is`)
+    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${req.body.lat},${req.body.lng}&key=AIzaSyCEGkg6nQMSnelLm6PP8vRMbuOftjG-u7Y`)
         .then(function (resp) {
             var tracedData = new TraceUser({
                 username: resp.data.results[0].formatted_address,
@@ -29,7 +29,7 @@ const getuser = (req, res) => {
         if (!resp) {
             return res.send('NO user found')
         }
-        res.send(resp)
+        res.send(resp.username)
     })
 }
 
