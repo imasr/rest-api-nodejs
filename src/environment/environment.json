@@ -1,6 +1,5 @@
 {
     "prod": {
-        "PORT": 8080,
         "MONGODB_URI": "mongodb://imasr:ashishs723@ds125831.mlab.com:25831/asr",
         "secret_token": "my-secret",
         "email": "emailfrom.asr@gmail.com",
