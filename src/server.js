@@ -55,4 +55,8 @@ io.on('connection', (socket) => {
     socket.on('new-message', message => {
         io.emit('new-message', message);
     })
+    socket.on('typing', data => {
+        data['isTyping'] = true
+        io.emit('typing', data);
+    })
 })
