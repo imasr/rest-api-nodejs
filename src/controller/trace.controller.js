@@ -2,25 +2,15 @@
 const os = require("os");
 const _ = require("lodash");
 const { TraceUser } = require("../model/trace.model");
-var NodeGeocoder = require('node-geocoder');
+var axios = require('axios');
 
-var options = {
-    provider: 'google',
-
-    // Optional depending on the providers
-    httpAdapter: 'https', // Default
-    apiKey: 'AIzaSyB5xFQL7-Cy90I-RzAAJRjU-IxUtKSb-is', // for Mapquest, OpenCage, Google Premier
-    formatter: null         // 'gpx', 'string', ...
-};
-
-var geocoder = NodeGeocoder(options);
 
 const trace = (req, res) => {
-    geocoder.reverse(req.body)
+    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${req.body.lat},${req.body.lng}&key=AIzaSyCEGkg6nQMSnelLm6PP8vRMbuOftjG-u7Y`)
         .then(function (resp) {
             var tracedData = new TraceUser({
-                username: resp[0].formattedAddress,
-                details: resp[0]
+                username: resp.data.results[0].formatted_address,
+                details: resp.data.results[0]
             })
             if (tracedData) {
                 tracedData.save().then(success => {
@@ -39,7 +29,7 @@ const getuser = (req, res) => {
         if (!resp) {
             return res.send('NO user found')
         }
-        res.send(resp)
+        res.send(resp.username)
     })
 }
 
