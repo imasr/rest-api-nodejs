@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const validator = require("express-validator");
 const path = require("path");
 const socket = require("socket.io");
+const { Chats } = require("./model/chats.model")
 
 const {
     auth
@@ -34,7 +35,7 @@ app.use(express.static(path.join(__dirname, '/public')))
 
 app.use('/', traceing, auth, users)
 
-let server=app.listen(port, () => {
+let server = app.listen(port, () => {
     console.log(`Server started at ${port}`);
 })
 // let server=https.createServer({
@@ -44,23 +45,47 @@ let server=app.listen(port, () => {
 //     console.log(`Server started at ${port}`);
 // })
 
-// const chatStore = (message, timeStamp) => {
-//     let storeData = {
-//         chatMessage: message,
-//         timeStamp: timeStamp
-//     }
-//     db.collection('chatroom-chats').save(storeData, (err, result) => {
-//         if (err) {
-//             return console.log(err);
-//         }
-//         console.log('saved to database');
-//     })
-// }
+const chatStore = (data) => {
+    let newData = {
+        message: message,
+        username: username,
+        room: room
+    }
+    let chats = new Chats(newData)
+    chats.save(storeData, (err, result) => {
+        if (err) {
+            return console.log(err);
+        }
+        console.log('saved to database');
+    })
+}
 let io = socket(server)
 io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.on('new-message', message => {
-        io.emit('new-message', message);
+    socket.on('join', data => {
+        socket.join(data.room);
+        Chats.find({}).then(rooms => {
+            count = 0;
+            rooms.forEach((room) => {
+                if (room.room == data.room) {
+                    count++;
+                }
+            });
+            // Create the chatRoom if not already created
+            if (count == 0) {
+                Chats.create({ username: data.username, room: data.room, messages: [] });
+            }
+        })
+    });
+
+    socket.on('new-message', data => {
+        io.in(data.room).emit('new-message', data);
+        Chats.findOneAndUpdate({ room: data.room }, { $push: { messages: { timestamp: data.timestamp, message: data.message } } }, (err, res) => {
+            if (err) {
+                console.log(err);
+                return false;
+            }
+        });
     })
     socket.on('typing', data => {
         data['isTyping'] = true
