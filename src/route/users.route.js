@@ -15,9 +15,12 @@ const {
     sendFriendRequest,
     cancelFriendRequest,
     acceptFriendRequest,
-    rejectFriendRequest
+    rejectFriendRequest,
+    getContactList
 } = require("./../controller/userContact.controller");
-
+const {
+    getConversation
+} = require("./../controller/chats.controller");
 var users = express.Router()
 
 users.get('/users', requireLogin, getAllusers);
@@ -29,6 +32,8 @@ users.post('/users/send-request', requireLogin, sendFriendRequest);
 users.post('/users/cancel-request', requireLogin, cancelFriendRequest);
 users.post('/users/accept-request', requireLogin, acceptFriendRequest);
 users.post('/users/reject-request', requireLogin, rejectFriendRequest);
+users.get('/users/contacts', requireLogin, getContactList);
+users.get('/users/chats/:room', requireLogin, getConversation);
 users.get('/users/:id', requireLogin, getUserById);
 
 

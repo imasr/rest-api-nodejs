@@ -71,9 +71,20 @@ const rejectFriendRequest = (req, res) => {
 
 }
 
+const getContactList = (req, res) => {
+    return UserContact.find({}).then(list => {
+        if (!list) {
+            throw errorHandler("contactConfig.requestAlreadySent")
+        }
+        res.send(list)
+
+    })
+}
+
 module.exports = {
     sendFriendRequest,
     acceptFriendRequest,
     rejectFriendRequest,
-    cancelFriendRequest
+    cancelFriendRequest,
+    getContactList
 }

@@ -45,20 +45,6 @@ let server = app.listen(port, () => {
 //     console.log(`Server started at ${port}`);
 // })
 
-const chatStore = (data) => {
-    let newData = {
-        message: message,
-        username: username,
-        room: room
-    }
-    let chats = new Chats(newData)
-    chats.save(storeData, (err, result) => {
-        if (err) {
-            return console.log(err);
-        }
-        console.log('saved to database');
-    })
-}
 let io = socket(server)
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -73,22 +59,28 @@ io.on('connection', (socket) => {
             });
             // Create the chatRoom if not already created
             if (count == 0) {
-                Chats.create({ username: data.username, room: data.room, messages: [] });
+                let chats = new Chats({ username: data.username, room: data.room, messages: [] })
+                chats.save().then(res => {
+                    console.log(res)
+                });
             }
         })
     });
 
     socket.on('new-message', data => {
         io.in(data.room).emit('new-message', data);
-        Chats.findOneAndUpdate({ room: data.room }, { $push: { messages: { timestamp: data.timestamp, message: data.message } } }, (err, res) => {
-            if (err) {
-                console.log(err);
-                return false;
-            }
-        });
+        Chats.findOneAndUpdate({ room: data.room }, { $push: { messages: { timestamp: data.timestamp, message: data.message } } }, { new: true })
+            .then(res => {
+                console.log(res);
+                if (!res) {
+                    return false;
+                }
+            }).catch(err => {
+                console.log(err)
+            });
     })
     socket.on('typing', data => {
         data['isTyping'] = true
-        io.emit('typing', data);
+        socket.broadcast.in(data.room).emit('typing', data);
     })
 })
