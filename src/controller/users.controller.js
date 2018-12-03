@@ -8,20 +8,23 @@ const { upload } = require("./../services/fileupload.service");
 const { setOnlineStatus } = require("./../services/onlineStatus.services");
 const { errorHandler, responseHandler } = require("./../helper/error.handler");
 const { pickUserResponse } = require("../helper/response.handler");
+const { filterUser } = require("../helper/filter");
 
 const getAllusers = (req, res) => {
-    User.find({}, {
+    User.find({ "isActive": true, }, {
         password: 0,
         deviceToken: 0,
-        resetToken: 0
+        resetToken: 0,
     }).then(users => {
         if (!users) {
             throw errorHandler(messageConfig.userNotFound)
         } else {
-            res.send({
-                result: users,
-                status: 1,
-                message: messageConfig.success
+            return filterUser(users, req).then(result => {
+                res.send({
+                    result: result,
+                    status: 1,
+                    message: messageConfig.success
+                })
             })
         }
     }).catch(error => {
@@ -57,11 +60,14 @@ const deleteUser = (req, res) => {
         if (!ObjectID.isValid(req.body.id)) {
             return res.status(400).send(errorHandler(messageConfig.invalidUserId))
         } else {
-            User.findByIdAndRemove(req.body.id).then(deletedUser => {
-                res.send(responseHandler(`${deletedUser.username} deleted Sucessfully`, messageConfig.success))
-            }).catch(err => {
-                res.status(400).send(err)
-            })
+            User.findByIdAndUpdate(req.body.id,
+                { $set: { isActive: false } },
+                { new: true })
+                .then(deletedUser => {
+                    res.send(responseHandler(`${deletedUser.username} deleted Sucessfully`, messageConfig.success))
+                }).catch(err => {
+                    res.status(400).send(err)
+                })
         }
     }
 }

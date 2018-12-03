@@ -9,6 +9,7 @@
     "validationError": "Validation error",
     "userRegistered": "User registeration successful",
     "userNotFound": "User not found",
+    "userDisabled": "Your account is Deactivated. Please Contact Admin",
     "emailNotFound": "Email not found",
     "invalidCredentials": "The username or password you have entered is invalid Please Try Again",
     "invalidEmail": "Email address is not valid",

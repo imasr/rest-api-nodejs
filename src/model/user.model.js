@@ -64,6 +64,10 @@ var UserSchema = mongoose.Schema({
     image: {
         type: String,
     },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
     userStatus: {
         onlineStatus: {
             type: String,
