@@ -50,11 +50,10 @@ var login = (req, res) => {
         return User.findOne({
             email: req.body.email,
         }).then(user => {
-            if (!user.isActive) {
-                throw errorHandler(messageConfig.userDisabled)
-            }
             if (!user) {
                 throw errorHandler(messageConfig.userNotFound)
+            } else if (!user.isActive) {
+                throw errorHandler(messageConfig.userDisabled)
             } else {
                 if (req.body['deviceToken']) {
                     saveDeviceTokenFirebase(user, req.body['deviceToken'])

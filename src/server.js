@@ -19,6 +19,8 @@ const {
 const {
     lastSeenCheck
 } = require("./utility/cron");
+
+const { saveConversation } = require('./controller/chats.controller')
 var fs = require('fs')
 var https = require('https')
 const port = process.env.PORT
@@ -69,15 +71,12 @@ io.on('connection', (socket) => {
 
     socket.on('new-message', data => {
         io.in(data.room).emit('new-message', data);
-        Chats.findOneAndUpdate({ room: data.room }, { $push: { messages: { timestamp: data.timestamp, message: data.message } } }, { new: true })
-            .then(res => {
-                console.log(res);
-                if (!res) {
-                    return false;
-                }
-            }).catch(err => {
-                console.log(err)
-            });
+        try {
+            saveConversation(data)
+        }
+        catch (err) {
+            console.error(err)
+        }
     })
     socket.on('typing', data => {
         data['isTyping'] = true

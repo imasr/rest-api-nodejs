@@ -10,11 +10,17 @@ var chatSchema = mongoose.Schema({
   messages: {
     type: [mongoose.Schema({
       timestamp: {
-        type: Date
+        type: Date,
+        required: true
       },
       message: {
-        type: String
+        type: String,
+        required: true
       },
+      senderId: {
+        type: String,
+        required: true
+      }
     }, { _id: false, })]
   }
 
