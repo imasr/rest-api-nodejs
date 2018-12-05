@@ -135,6 +135,8 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
 
 const firebasepushnotification = (data) => {
     return User.findById(data.receiverId).then(user => {
+        console.log(user);
+
         if (!user) {
             throw errorHandler(messageConfig.userNotFound)
         } else {
@@ -145,7 +147,7 @@ const firebasepushnotification = (data) => {
             user.deviceToken.map((token, index) => {
                 axios.post(process.env.FCMUrl, {
                     "notification": {
-                        "title": process.env.FCMtitle,
+                        "title": data.senderName,
                         "body": data.message,
                         "icon": process.env.FCMicon
                     },

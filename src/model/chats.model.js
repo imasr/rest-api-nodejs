@@ -1,5 +1,29 @@
 const mongoose = require("mongoose");
 
+
+var messageSchema = mongoose.Schema({
+  timestamp: {
+    type: Date,
+    required: true
+  },
+  message: {
+    type: String,
+    required: true
+  },
+  senderId: {
+    type: String,
+    required: true
+  },
+  receiverId: {
+    type: String,
+    required: true
+  },
+  senderName: {
+    type: String,
+    required: true
+  }
+}, { _id: false, })
+
 var chatSchema = mongoose.Schema({
   username: {
     type: String
@@ -7,27 +31,7 @@ var chatSchema = mongoose.Schema({
   room: {
     type: String
   },
-  messages: {
-    type: [mongoose.Schema({
-      timestamp: {
-        type: Date,
-        required: true
-      },
-      message: {
-        type: String,
-        required: true
-      },
-      senderId: {
-        type: String,
-        required: true
-      },
-      receiverId: {
-        type: String,
-        required: true
-      }
-    }, { _id: false, })]
-  }
-
+  messages: [messageSchema]
 }, {
     timestamps: true,
     versionKey: false,

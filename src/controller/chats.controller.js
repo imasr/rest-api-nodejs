@@ -19,6 +19,7 @@ const saveConversation = (data) => {
         timestamp: data.timestamp,
         message: data.message,
         senderId: data.senderId,
+        senderName: data.senderName,
         receiverId: data.receiverId
       }
     }
