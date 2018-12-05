@@ -135,8 +135,6 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
 
 const firebasepushnotification = (data) => {
     return User.findById(data.receiverId).then(user => {
-        console.log(user);
-
         if (!user) {
             throw errorHandler(messageConfig.userNotFound)
         } else {

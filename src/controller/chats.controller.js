@@ -29,7 +29,6 @@ const saveConversation = (data) => {
         return false;
       }
       firebasepushnotification(data).then(res => {
-        console.log("kkkkk", res)
       }).catch(err => {
         console.log(err);
       })
