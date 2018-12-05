@@ -1,6 +1,6 @@
 
 const { Chats } = require("../model/chats.model");
-
+const { firebasepushnotification } = require('./users.controller')
 
 const getConversation = (req, res) => {
   let room = req.params.room
@@ -13,11 +13,25 @@ const getConversation = (req, res) => {
 }
 
 const saveConversation = (data) => {
-  return Chats.findOneAndUpdate({ room: data.room }, { $push: { messages: { timestamp: data.timestamp, message: data.message, senderId: data.senderId } } }, { new: true })
+  return Chats.findOneAndUpdate({ room: data.room }, {
+    $push: {
+      messages: {
+        timestamp: data.timestamp,
+        message: data.message,
+        senderId: data.senderId,
+        receiverId: data.receiverId
+      }
+    }
+  }, { new: true })
     .then(res => {
       if (!res) {
         return false;
       }
+      firebasepushnotification(data).then(res => {
+        console.log("kkkkk", res)
+      }).catch(err => {
+        console.log(err);
+      })
     })
 }
 

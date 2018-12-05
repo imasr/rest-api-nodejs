@@ -133,9 +133,8 @@ const saveDeviceTokenFirebase = (user, newDeviceToken) => {
     }
 };
 
-const firebasepushnotification = (req, res) => {
-    let id = req.user_id
-    User.findById(id).then(user => {
+const firebasepushnotification = (data) => {
+    return User.findById(data.receiverId).then(user => {
         if (!user) {
             throw errorHandler(messageConfig.userNotFound)
         } else {
@@ -147,22 +146,16 @@ const firebasepushnotification = (req, res) => {
                 axios.post(process.env.FCMUrl, {
                     "notification": {
                         "title": process.env.FCMtitle,
-                        "body": process.env.FCMbody,
-                        "icon": process.env.FCMicon,
-                        "click_action": "login"
+                        "body": data.message,
+                        "icon": process.env.FCMicon
                     },
                     "to": token
                 }, {
                         headers: headers
                     }).then(response => { })
             })
-            res.send({
-                "success": true
-            })
         }
-    }).catch(error => {
-        res.status(400).send(error)
-    });
+    })
 }
 
 

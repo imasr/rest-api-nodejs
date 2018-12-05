@@ -20,6 +20,10 @@ var chatSchema = mongoose.Schema({
       senderId: {
         type: String,
         required: true
+      },
+      receiverId: {
+        type: String,
+        required: true
       }
     }, { _id: false, })]
   }
