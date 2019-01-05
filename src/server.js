@@ -21,8 +21,6 @@ const {
 } = require("./utility/cron");
 
 const { saveConversation } = require('./controller/chats.controller')
-var fs = require('fs')
-var https = require('https')
 const port = process.env.PORT
 
 var app = express();
