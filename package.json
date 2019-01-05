@@ -4,7 +4,7 @@
     "description": "",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon ./src/server.js",
+        "start": "node ./src/server.js",
         "compile": "babel src --out-dir .compiled --source-maps --watch"
     },
     "engines": {
