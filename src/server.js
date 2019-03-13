@@ -5,22 +5,16 @@ const bodyParser = require("body-parser");
 const validator = require("express-validator");
 const path = require("path");
 const socket = require("socket.io");
+
 const { Chats } = require("./model/chats.model")
 
-const {
-    auth
-} = require("./route/authentication.route");
-const {
-    users
-} = require("./route/users.route");
-const {
-    traceing
-} = require("./route/trace.route");
-const {
-    lastSeenCheck
-} = require("./utility/cron");
-
+const { lastSeenCheck } = require("./utility/cron");
 const { saveConversation } = require('./controller/chats.controller')
+
+const { auth } = require("./route/authentication.route");
+const { users } = require("./route/users.route");
+const { traceing } = require("./route/trace.route");
+
 const port = process.env.PORT
 
 var app = express();
