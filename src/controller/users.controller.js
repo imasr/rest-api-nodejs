@@ -158,12 +158,31 @@ const firebasepushnotification = (data) => {
     })
 }
 
+const searchUser = (req, res) => {
+    return User.aggregate().match({ email: { '$regex': `${req.body.email}` } }).then(users => {
+        if (!users) {
+            throw errorHandler(messageConfig.userNotFound)
+        } else {
+            return filterUser(users, req).then(result => {
+                res.send({
+                    result: result,
+                    status: 1,
+                    message: messageConfig.success
+                })
+            })
+        }
+    }).catch(error => {
+        error.status = 0
+        res.status(400).send(error)
+    })
+}
 
 
 module.exports = {
     getAllusers,
     getUserById,
     deleteUser,
+    searchUser,
     userProfileImage,
     onlineStatus,
     firebasepushnotification,

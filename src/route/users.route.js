@@ -7,6 +7,7 @@ const {
     getAllusers,
     getUserById,
     deleteUser,
+    searchUser,
     userProfileImage,
     onlineStatus,
     firebasepushnotification
@@ -25,6 +26,7 @@ var users = express.Router()
 
 users.get('/users', requireLogin, getAllusers);
 users.post('/users/delete', requireLogin, deleteUser);
+users.post('/users/search', requireLogin, searchUser);
 users.post('/users/uploadProfileIphoto', requireLogin, userProfileImage);
 users.get('/users/status', requireLogin, onlineStatus);
 users.get('/users/send-notification', requireLogin, firebasepushnotification);
