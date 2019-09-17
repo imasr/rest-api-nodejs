@@ -2,18 +2,30 @@ require('./environment/environment');
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const validator = require("express-validator");
+// const validator = require("express-validator");
 const path = require("path");
 const socket = require("socket.io");
 
-const { Chats } = require("./model/chats.model")
+const {
+    Chats
+} = require("./model/chats.model")
 
-const { lastSeenCheck } = require("./utility/cron");
-const { saveConversation } = require('./controller/chats.controller')
+const {
+    lastSeenCheck
+} = require("./utility/cron");
+const {
+    saveConversation
+} = require('./controller/chats.controller')
 
-const { auth } = require("./route/authentication.route");
-const { users } = require("./route/users.route");
-const { traceing } = require("./route/trace.route");
+const {
+    auth
+} = require("./route/authentication.route");
+const {
+    users
+} = require("./route/users.route");
+const {
+    traceing
+} = require("./route/trace.route");
 
 const port = process.env.PORT
 
@@ -21,7 +33,7 @@ var app = express();
 
 app.use(bodyParser.json())
 app.use(cors())
-app.use(validator())
+// app.use(validator())
 
 lastSeenCheck();
 app.use(express.static(path.join(__dirname, '/public')))
@@ -53,7 +65,11 @@ io.on('connection', (socket) => {
             });
             // Create the chatRoom if not already created
             if (count == 0) {
-                let chats = new Chats({ username: data.username, room: data.room, messages: [] })
+                let chats = new Chats({
+                    username: data.username,
+                    room: data.room,
+                    messages: []
+                })
                 chats.save().then(res => {
                     console.log(res)
                 });
@@ -65,8 +81,7 @@ io.on('connection', (socket) => {
         io.in(data.room).emit('new-message', data);
         try {
             saveConversation(data)
-        }
-        catch (err) {
+        } catch (err) {
             console.error(err)
         }
     })
