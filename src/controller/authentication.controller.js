@@ -1,13 +1,29 @@
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
-const { mailer } = require("./../services/mailer.services");
-const { decryptFunc, encryptFunc } = require("./../services/crypto.services");
-const { User } = require("../model/user.model");
+const {
+    mailer
+} = require("./../services/mailer.services");
+const {
+    decryptFunc,
+    encryptFunc
+} = require("./../services/crypto.services");
+const {
+    User
+} = require("../model/user.model");
 const messageConfig = require('./../config/message.json')
-const { errorHandler } = require("./../helper/error.handler");
-const { pickLoginResponse, pickUserResponse } = require("./../helper/response.handler");
-const { generateToken } = require('./../helper/generate.token');
-const { saveDeviceTokenFirebase } = require("./users.controller");
+const {
+    errorHandler
+} = require("./../helper/error.handler");
+const {
+    pickLoginResponse,
+    pickUserResponse
+} = require("./../helper/response.handler");
+const {
+    generateToken
+} = require('./../helper/generate.token');
+const {
+    saveDeviceTokenFirebase
+} = require("./users.controller");
 
 //registration controller
 var register = (req, res) => {
@@ -25,12 +41,24 @@ var register = (req, res) => {
                 throw errorHandler(messageConfig.duplicateEmail)
             } else {
                 let test = new User(req.body);
-                return test.save().then(response => {
-                    res.send({
-                        result: pickUserResponse(response),
-                        status: 1,
-                        message: messageConfig.userRegistered
+                return test.save().then(resp => {
+                    if (req.body['deviceToken']) {
+                        saveDeviceTokenFirebase(resp, req.body['deviceToken'])
+                    }
+                    return bcrypt.compare(req.body.password, resp.password).then(response => {
+                        if (response) {
+                            return generateToken(resp).then(userWithToken => {
+                                res.send({
+                                    result: pickLoginResponse(userWithToken),
+                                    status: 1,
+                                    message: messageConfig.userRegistered
+                                })
+                            })
+                        } else {
+                            throw errorHandler(messageConfig.incorrectPassword)
+                        }
                     })
+
                 })
             }
         }).catch(e => {
@@ -93,8 +121,8 @@ var sociallogin = (req, res) => {
             }
             var body = _.pick(req.body, ["username", "email", "gender", "image_url", "birthday", "fb_id", "google_id"])
             return User.findByIdAndUpdate(user._id, {
-                $set: body
-            }, {
+                    $set: body
+                }, {
                     new: true
                 })
                 .then(socialLoginUser => {
@@ -130,8 +158,8 @@ var sociallogin = (req, res) => {
 let forget = (req, res) => {
     encryptFunc(Date.now()).then(encryptedId => {
         return User.findOneAndUpdate({
-            email: req.body.email,
-        }, {
+                email: req.body.email,
+            }, {
                 $set: {
                     "resetToken": encryptedId
                 }
@@ -159,8 +187,8 @@ let reset = (req, res) => {
     let encryptedToken = decodeURIComponent(req.body.key)
     decryptFunc(encryptedToken).then(timestamp => {
         return User.findOneAndUpdate({
-            resetToken: encryptedToken
-        }, {
+                resetToken: encryptedToken
+            }, {
                 $set: {
                     "password": req.body.newPassword,
                     "resetToken": null

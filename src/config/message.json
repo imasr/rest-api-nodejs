@@ -7,7 +7,7 @@
     "passwordReset": "Password has been successfully updated",
     "invalidRequest": "Invalid request",
     "validationError": "Validation error",
-    "userRegistered": "User registeration successful",
+    "userRegistered": "User registration successful",
     "userNotFound": "User not found",
     "userDisabled": "Your account is Deactivated. Please Contact Admin",
     "emailNotFound": "Email not found",
