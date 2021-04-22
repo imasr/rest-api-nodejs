@@ -1,6 +1,6 @@
 {
     "prod": {
-        "MONGODB_URI": "mongodb://asr:ashishs723@ds145574.mlab.com:45574/asr",
+        "MONGODB_URI": "mongodb+srv://ashishs723:Ashishs723@cluster0.llwqi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
         "secret_token": "my-secret",
         "email": "emailfrom.asr@gmail.com",
         "emailPassword": "java@123",
