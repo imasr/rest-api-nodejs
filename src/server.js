@@ -31,16 +31,15 @@ const port = process.env.PORT
 
 var app = express();
 
-app.use(express.json())
+app.use(bodyParser.json())
 app.use(cors())
 // app.use(validator())
-//sss
 
 lastSeenCheck();
 app.use(express.static(path.join(__dirname, '/public')))
 
 
-app.use('/', traceing, auth, users)
+app.use('/', auth, users)
 
 let server = app.listen(port, () => {
     console.log(`Server started at ${port}`);
