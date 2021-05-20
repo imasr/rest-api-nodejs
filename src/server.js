@@ -1,4 +1,4 @@
-require('./environment/environment');
+require("./environment/environment");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -6,44 +6,31 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const socket = require("socket.io");
 
-const {
-    Chats
-} = require("./model/chats.model")
+const { Chats } = require("./model/chats.model");
 
-const {
-    lastSeenCheck
-} = require("./utility/cron");
-const {
-    saveConversation
-} = require('./controller/chats.controller')
+const { lastSeenCheck } = require("./utility/cron");
+const { saveConversation } = require("./controller/chats.controller");
 
-const {
-    auth
-} = require("./route/authentication.route");
-const {
-    users
-} = require("./route/users.route");
-const {
-    traceing
-} = require("./route/trace.route");
+const { auth } = require("./route/authentication.route");
+const { users } = require("./route/users.route");
+const { traceing } = require("./route/trace.route");
 
-const port = process.env.PORT
+const port = process.env.PORT;
 
 var app = express();
 
-app.use(bodyParser.json())
-app.use(cors())
+app.use(bodyParser.json());
+app.use(cors());
 // app.use(validator())
 
 lastSeenCheck();
-app.use(express.static(path.join(__dirname, '/public')))
+app.use(express.static(path.join(__dirname, "/public")));
 
-
-app.use('/', auth, users)
+app.use("/", auth, users);
 
 let server = app.listen(port, () => {
-    console.log(`Server started at ${port}`);
-})
+  console.log(`Server started at ${port}`);
+});
 // let server=https.createServer({
 //     key: fs.readFileSync('server.key'),
 //     cert: fs.readFileSync('server.cert')
@@ -51,42 +38,42 @@ let server = app.listen(port, () => {
 //     console.log(`Server started at ${port}`);
 // })
 
-let io = socket(server)
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('join', data => {
-        socket.join(data.room);
-        Chats.find({}).then(rooms => {
-            count = 0;
-            rooms.forEach((room) => {
-                if (room.room == data.room) {
-                    count++;
-                }
-            });
-            // Create the chatRoom if not already created
-            if (count == 0) {
-                let chats = new Chats({
-                    username: data.username,
-                    room: data.room,
-                    messages: []
-                })
-                chats.save().then(res => {
-                    console.log(res)
-                });
-            }
-        })
-    });
-
-    socket.on('new-message', data => {
-        io.in(data.room).emit('new-message', data);
-        try {
-            saveConversation(data)
-        } catch (err) {
-            console.error(err)
+let io = socket(server);
+io.on("connection", (socket) => {
+  console.log("a user connected");
+  socket.on("join", (data) => {
+    socket.join(data.room);
+    Chats.find({}).then((rooms) => {
+      count = 0;
+      rooms.forEach((room) => {
+        if (room.room == data.room) {
+          count++;
         }
-    })
-    socket.on('typing', data => {
-        data['isTyping'] = true
-        socket.broadcast.in(data.room).emit('typing', data);
-    })
-})
+      });
+      // Create the chatRoom if not already created
+      if (count == 0) {
+        let chats = new Chats({
+          username: data.username,
+          room: data.room,
+          messages: [],
+        });
+        chats.save().then((res) => {
+          console.log(res);
+        });
+      }
+    });
+  });
+
+  socket.on("new-message", (data) => {
+    io.in(data.room).emit("new-message", data);
+    try {
+      saveConversation(data);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+  socket.on("typing", (data) => {
+    data["isTyping"] = true;
+    socket.broadcast.in(data.room).emit("typing", data);
+  });
+});
