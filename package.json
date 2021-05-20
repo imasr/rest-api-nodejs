@@ -1,35 +1,31 @@
 {
-    "name": "login-api",
-    "version": "1.0.0",
-    "description": "",
-    "main": "app.js",
-    "scripts": {
-        "start": "nodemon ./src/server.js",
-        "compile": "babel src --out-dir .compiled --source-maps --watch"
-    },
-    "engines": {
-        "node": "8.11.4",
-        "npm": "6.4.1"
-    },
-    "private": true,
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "axios": "^0.19.0",
-        "bcrypt": "^3.0.6",
-        "cors": "^2.8.5",
-        "crypto-js": "^3.1.9-1",
-        "express": "^4.17.1",
-        "express-validator": "^6.2.0",
-        "jsonwebtoken": "^8.5.1",
-        "lodash": "^4.17.15",
-        "moment": "^2.24.0",
-        "mongodb": "^3.3.2",
-        "mongoose": "^5.7.1",
-        "multer": "^1.4.2",
-        "node-cron": "^2.0.3",
-        "nodemailer": "^6.3.0",
-        "nodemon": "^1.19.2",
-        "socket.io": "^2.2.0"
-    }
+  "name": "login-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./src/server.js",
+    "compile": "babel src --out-dir .compiled --source-maps --watch"
+  },
+  "private": true,
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "bcrypt": "^3.0.8",
+    "cors": "^2.8.5",
+    "crypto-js": "^3.3.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.11.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.7",
+    "mongoose": "^5.12.10",
+    "multer": "^1.4.2",
+    "node-cron": "^2.0.3",
+    "nodemailer": "^6.6.0",
+    "nodemon": "^1.19.4",
+    "socket.io": "^2.4.1"
+  }
 }
