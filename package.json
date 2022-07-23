@@ -7,6 +7,10 @@
     "start": "nodemon ./src/server.js",
     "compile": "babel src --out-dir .compiled --source-maps --watch"
   },
+  "engines": {
+    "node": "14.15.5",
+    "npm": "6.14.11"
+  },
   "private": true,
   "author": "",
   "license": "ISC",
