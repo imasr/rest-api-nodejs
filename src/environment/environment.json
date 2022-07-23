@@ -17,7 +17,7 @@
     "defaultPassword": "111"
   },
   "development": {
-    "PORT": 8080,
+    "PORT": 4000,
     "MONGODB_URI": "mongodb+srv://ashishs723:Ashishs723@cluster0.5wkjr.mongodb.net/asr?retryWrites=true&w=majority",
     "secret_token": "my-secret",
     "email": "emailfrom.asr@gmail.com",
